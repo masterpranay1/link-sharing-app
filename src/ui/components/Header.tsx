@@ -1,0 +1,59 @@
+import Logo from "../../assets/logo.png";
+import ProfileIcon from "../../assets/profile.png";
+import PreviewIcon from "../../assets/preview.png";
+import LinksIcon from "../../assets/link.png";
+
+import useLinks from "../hooks/useLinks";
+
+const Nav = () => {
+  const { activeLinksStatus, handleFunctions } = useLinks();
+
+  return (
+    <nav className="w-full flex flex-row items-center gap-2">
+      <button
+        className={`px-4 py-2 rounded-lg ml-auto flex items-center gap-2 ${
+          activeLinksStatus.isLinksActive ? "bg-violet-100 text-violet-400" : ""
+        }`}
+        onClick={handleFunctions.handleLinksClick}
+      >
+        <img src={LinksIcon} alt="Links" className="w-6 h-6" />
+        <span className="hidden sm:block">Links</span>
+      </button>
+      <button
+        className={`px-3 py-1 rounded-lg flex items-center gap-2 ${
+          activeLinksStatus.isProfileActive
+            ? "bg-violet-100 text-violet-400"
+            : ""
+        }`}
+        onClick={handleFunctions.handleProfileClick}
+      >
+        <img src={ProfileIcon} alt="Profile" className="w-8 h-8" />
+        <span className="hidden sm:block">Profile Details</span>
+      </button>
+      <button
+        className={`ml-auto border border-violet-200 px-4 py-2 rounded-lg gap-2 ${
+          activeLinksStatus.isPreviewActive
+            ? "bg-violet-100 text-violet-400"
+            : ""
+        }`}
+        onClick={handleFunctions.handlePreviewClick}
+      >
+        <img src={PreviewIcon} alt="preview" className="w-6 h-6 sm:hidden" />
+        <span className="hidden sm:block">Preview</span>
+      </button>
+    </nav>
+  );
+};
+
+export default function Header() {
+  return (
+    <header className="bg-white flex flex-row gap-4 p-4 shadow sm:rounded-lg">
+      <div className="logo flex items-center gap-2 w-fit">
+        <img src={Logo} className="w-8 h-8" alt="devlinks" />
+        <h1 className="hidden sm:block text-2xl font-bold">devlinks</h1>
+      </div>
+
+      <Nav />
+    </header>
+  );
+}
