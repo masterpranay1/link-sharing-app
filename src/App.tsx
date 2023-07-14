@@ -1,10 +1,15 @@
+import { Routes, Route } from "react-router-dom"
+import { Home, Preview, Dashboard } from "./ui/page/"
+
 function App() {
 
   return (
     <>
-      <div className="bg-slate-500">
-        Hello Pranay!!
-      </div>
+      <Routes>
+        <Route path="/home?" element={<Home />} />
+        <Route path="/preview" element={<Preview />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
     </>
   )
 }
