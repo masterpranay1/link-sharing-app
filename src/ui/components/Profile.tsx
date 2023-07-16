@@ -1,6 +1,6 @@
 export default function Profile({ className }: { className?: string }) {
   return (
-    <section className={`${className} bg-white rounded-lg px-6 py-8`}>
+    <section className={`${className} bg-white rounded-lg px-4 py-4 relative`}>
       <h1 className="text-4xl text-slate-600 font-bold">Profile Details</h1>
       <p className="text-slate-400 mt-2">
         Add your details to create a personal touch to your profile
@@ -81,9 +81,9 @@ export default function Profile({ className }: { className?: string }) {
         </div>
       </div>
 
-      <div className="py-4 border-t sticky bg-white w-full bottom-0 left-0 flex">
+      <div className="py-4 border-t bg-white w-full bottom-0 left-0 flex">
         <button className="w-full sm:w-fit ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold">
-          Submit
+          Save
         </button>
       </div>
     </section>
