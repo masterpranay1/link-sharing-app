@@ -108,9 +108,11 @@ const LinkFormWrapper = () => {
   );
 };
 
-export default function LinkForm() {
+export default function LinkForm({ className }: { className?: string }) {
   return (
-    <div className="flex flex-col gap-4 m-4 sm:m-0 sm:my-4 p-4 bg-white rounded-lg relative">
+    <div
+      className={`flex flex-col gap-4 p-4 bg-white rounded-lg relative ${className}`}
+    >
       <h1 className="text-2xl font-bold text-slate-600">
         Customize your links
       </h1>
@@ -124,7 +126,9 @@ export default function LinkForm() {
         + Add new link
       </button>
 
-      <LinkFormWrapper />
+      <div className="flex flex-col gap-4">
+        <LinkFormWrapper />
+      </div>
 
       <div className="py-4 border-t sticky bg-white w-full bottom-0 left-0 flex">
         <button className="w-full sm:w-fit ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold">
