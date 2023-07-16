@@ -17,9 +17,10 @@ export interface IuseLinks {
 export default function useLinks(): IuseLinks {
   const navigate = useNavigate();
 
+  // TODO : Find which is active on first render and set it true
   const [isLinksActive, setIsLinksActive] = useState<boolean>(false);
   const [isProfileActive, setIsProfileActive] = useState<boolean>(false);
-  const [isPreviewActive, setIsPreviewActive] = useState<boolean>(true);
+  const [isPreviewActive, setIsPreviewActive] = useState<boolean>(false);
 
   const handleLinksClick = () => {
     setIsLinksActive(true);
