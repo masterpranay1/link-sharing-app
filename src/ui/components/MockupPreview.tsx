@@ -1,4 +1,5 @@
 import RightArrow from "../../assets/right-arrow.png";
+import DPImage from "../../assets/dp.jpeg";
 
 const Button = ({
   text,
@@ -36,7 +37,7 @@ export default function MockupPreview({ className }: { className?: string }) {
           <div className="w-full h-full overflow-y-scroll no-scrollbar pb-12">
             <figure>
               <img
-                src="../../../src/assets/dp.jpeg"
+                src={DPImage}
                 alt="profile"
                 className="w-16 h-16 lg:w-24 lg:h-24 mx-auto rounded-full border-2 border-slate-400"
               />
