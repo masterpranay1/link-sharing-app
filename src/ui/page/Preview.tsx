@@ -35,7 +35,7 @@ export default function Preview() {
         <div className="w-full pb-12 md:pb-32 bg-slate-100 p-4">
           <header className="bg-white p-4 rounded-lg flex justify-between">
             <button className="border w-24 md:w-32 px-4 py-2 border-violet-400 text-violet-400 rounded-lg hover:bg-violet-400 hover:text-white transition-all text-sm">
-              <Link to="/links" className="block w-full h-full">Back</Link>
+              <Link to="/links" className="w-full h-full flex items-center justify-center">Back</Link>
             </button>
             <button className="bg-blue-600 text-white hover:opacity-60 px-4 py-2 w-24 md:w-32 rounded-lg text-sm">
               Share Link
