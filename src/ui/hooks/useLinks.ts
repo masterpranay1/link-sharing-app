@@ -27,7 +27,7 @@ export default function useLinks(): IuseLinks {
     setIsProfileActive(false);
     setIsPreviewActive(false);
 
-    navigate("/home/links");
+    navigate("/links");
   };
 
   const handleProfileClick = () => {
@@ -35,7 +35,7 @@ export default function useLinks(): IuseLinks {
     setIsProfileActive(true);
     setIsPreviewActive(false);
 
-    navigate("/home/profile");
+    navigate("/profile");
   };
 
   const handlePreviewClick = () => {

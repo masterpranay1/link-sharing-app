@@ -21,7 +21,7 @@ export default function Home() {
       <div className="bg-slate-100 sm:p-4">
         <Header />
         <Routes>
-          <Route path="/links" element={<LinksView />} />
+          <Route path="/links?" element={<LinksView />} />
           <Route path="/profile" element={<h1>Profile</h1>} />
         </Routes>
       </div>
