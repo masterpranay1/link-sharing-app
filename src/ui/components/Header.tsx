@@ -1,42 +1,53 @@
+import { useNavigate } from "react-router-dom";
+
 import Logo from "../../assets/logo.png";
 import ProfileIcon from "../../assets/profile.png";
 import PreviewIcon from "../../assets/preview.png";
 import LinksIcon from "../../assets/link.png";
-
-import useLinks from "../hooks/useLinks";
+import { NAVLINKSDATA } from "../../datasource/navlinks";
+import { useGlobal } from "../../services/context";
 
 const Nav = () => {
-  const { activeLinksStatus, handleFunctions } = useLinks();
+  const { navState, dispatchNavLink } = useGlobal();
+  const navigate = useNavigate();
+
+  const handleClick = (id: string) => {
+    dispatchNavLink(id);
+    const navLink = NAVLINKSDATA.find((item) => item.id == id);
+    navigate(navLink?.url as string);
+  };
 
   return (
     <nav className="w-full flex flex-row items-center gap-2">
       <button
         className={`px-4 py-2 rounded-lg ml-auto flex items-center gap-2 ${
-          activeLinksStatus.isLinksActive ? "bg-violet-100 text-violet-400" : ""
+          NAVLINKSDATA[0]?.id == navState?.id
+            ? "bg-violet-100 text-violet-400"
+            : ""
         }`}
-        onClick={handleFunctions.handleLinksClick}
+        onClick={() => handleClick(NAVLINKSDATA[0].id)}
       >
         <img src={LinksIcon} alt="Links" className="w-6 h-6" />
         <span className="hidden sm:block">Links</span>
       </button>
       <button
         className={`px-3 py-1 rounded-lg flex items-center gap-2 ${
-          activeLinksStatus.isProfileActive
+          NAVLINKSDATA[1]?.id == navState?.id
             ? "bg-violet-100 text-violet-400"
             : ""
         }`}
-        onClick={handleFunctions.handleProfileClick}
+        onClick={() => handleClick(NAVLINKSDATA[1].id)}
       >
         <img src={ProfileIcon} alt="Profile" className="w-8 h-8" />
         <span className="hidden sm:block">Profile Details</span>
       </button>
       <button
         className={`ml-auto border border-violet-200 px-4 py-2 rounded-lg gap-2 ${
-          activeLinksStatus.isPreviewActive
+          NAVLINKSDATA[2]?.id == navState?.id
             ? "bg-violet-100 text-violet-400"
             : ""
         }`}
-        onClick={handleFunctions.handlePreviewClick}
+        onClick={() => handleClick(NAVLINKSDATA[2].id)}
       >
         <img src={PreviewIcon} alt="preview" className="w-6 h-6 sm:hidden" />
         <span className="hidden sm:block">Preview</span>
