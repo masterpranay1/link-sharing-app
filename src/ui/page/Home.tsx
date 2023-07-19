@@ -1,9 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-import Header from "../components/Header";
-import LinkForm from "../components/LinksForm";
-import MockupPreview from "../components/MockupPreview";
-import Profile from "../components/Profile";
+import { Header, LinkForm, MockupPreview, Profile } from "../components"
 
 const LinksView = () => {
   return (
