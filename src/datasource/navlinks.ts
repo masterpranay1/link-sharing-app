@@ -11,4 +11,12 @@ export const NAVLINKSDATA: { id: string; url: string }[] = [
     id: "preview",
     url: "/preview",
   },
+  {
+    id: "login",
+    url: "/login",
+  },
+  {
+    id: "register",
+    url: "/register",
+  }
 ];

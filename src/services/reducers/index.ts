@@ -2,7 +2,7 @@ import { useReducer } from "react";
 
 export interface NavLinksState {
   id: string | null;
-  previousId : string | undefined
+  previousId: string | undefined;
 }
 
 interface Action {
@@ -14,8 +14,20 @@ export interface NavAction extends Action {
 }
 
 const NAVINITIALVALUE: NavLinksState = {
-  id: 'links',
-  previousId : undefined
+  id: "login",
+  previousId: undefined,
+};
+
+export interface UserState {
+  id: string | null;
+}
+
+export interface UserAction extends Action {
+  id: string;
+}
+
+const USERINITIALVALUE: UserState = {
+  id: null,
 };
 
 function navLinksReducer(state: NavLinksState, action: NavAction) {
@@ -24,9 +36,21 @@ function navLinksReducer(state: NavLinksState, action: NavAction) {
       return {
         ...state,
         id: action.id,
-        previousId : state.id as string
+        previousId: state.id as string,
       };
-    default : 
+    default:
+      return state;
+  }
+}
+
+function userReducer(state: UserState, action: UserAction) {
+  switch (action.type) {
+    case "update-user":
+      return {
+        ...state,
+        id: action.id,
+      };
+    default:
       return state;
   }
 }
@@ -34,19 +58,33 @@ function navLinksReducer(state: NavLinksState, action: NavAction) {
 function useDispatchNavLink() {
   const [state, dispatch] = useReducer(navLinksReducer, NAVINITIALVALUE);
 
-  function dispatchNavLink(id : string) {
+  function dispatchNavLink(id: string) {
     dispatch({
       type: "update-link",
-      id : id
-    })
-  } 
+      id: id,
+    });
+  }
 
   return {
     dispatchNavLink,
-    state
+    state,
   };
 }
 
-export {
-  useDispatchNavLink
+function useDispatchUser() {
+  const [state, dispatch] = useReducer(userReducer, USERINITIALVALUE);
+
+  function dispatchUser(id: string) {
+    dispatch({
+      type: "update-user",
+      id: id,
+    });
+  }
+
+  return {
+    dispatchUser,
+    state,
+  };
 }
+
+export { useDispatchNavLink, useDispatchUser };
