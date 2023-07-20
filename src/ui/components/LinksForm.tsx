@@ -15,6 +15,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useState } from "react";
 import CustomSelect from "./CustomSelect";
+import LinkIcon from "../../assets/link-icon.png";
 
 const LinkWrapper = ({ id }: { id: string }) => {
   const {
@@ -51,7 +52,7 @@ const LinkWrapper = ({ id }: { id: string }) => {
           Link
         </label>
         <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-lg border">
-          <span className="">Image</span>
+          <img src={LinkIcon} alt="link-icon" className="w-6 h-6"/>
           <input
             type="text"
             className="w-full focus:outline-none"

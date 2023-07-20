@@ -4,21 +4,28 @@ import RightArrow from "../../assets/right-arrow.png";
 import DPImage from "../../assets/dp.jpeg";
 import { NAVLINKSDATA } from "../../datasource/navlinks";
 import { useGlobal } from "../../services/context";
+import LinkedinIcon from "../../assets/linkedin-icon.png";
+import TwitterIcon from "../../assets/twitter-icon.png";
+import GithubIcon from "../../assets/github-icon.png";
+
+interface IButtonProps {
+  text: string;
+  bgcolor: string;
+  textColor?: string;
+  imageUrl?: string;
+}
 
 const Button = ({
   text,
   bgcolor,
   textColor = "text-white",
-}: {
-  text: string;
-  bgcolor: string;
-  textColor?: string;
-}) => {
+  imageUrl,
+}: IButtonProps) => {
   return (
     <button
-      className={`flex flex-row gap-2 items-center justify-center ${bgcolor} ${textColor} px-6 py-4 rounded-lg`}
+      className={`flex flex-row gap-4 items-center justify-center ${bgcolor} ${textColor} px-6 py-4 rounded-lg`}
     >
-      {/* <span>Image</span> */}
+      <img src={imageUrl} className="w-8 h-8 rounded-full border border-white" />
       <div className="block">{text}</div>
       <img
         width="24"
@@ -47,7 +54,10 @@ export default function Preview() {
               <Link
                 onClick={handleClick}
                 to={(() => {
-                  return NAVLINKSDATA.find((item) => item.id === navState.previousId)?.url || "/";
+                  return (
+                    NAVLINKSDATA.find((item) => item.id === navState.previousId)
+                      ?.url || "/"
+                  );
                 })()}
                 className="w-full h-full flex items-center justify-center"
               >
@@ -78,9 +88,21 @@ export default function Preview() {
             </p>
 
             <div className="button-wrapper mx-auto w-full flex flex-col gap-4 px-4 py-4 mt-8">
-              <Button text="Github" bgcolor="bg-slate-800" />
-              <Button text="Google" bgcolor="bg-red-600" />
-              <Button text="Linkedin" bgcolor="bg-blue-600" />
+              <Button
+                text="Github"
+                bgcolor="bg-slate-800"
+                imageUrl={GithubIcon}
+              />
+              <Button
+                text="Twitter"
+                bgcolor="bg-blue-400"
+                imageUrl={TwitterIcon}
+              />
+              <Button
+                text="Linkedin"
+                bgcolor="bg-blue-600"
+                imageUrl={LinkedinIcon}
+              />
             </div>
           </div>
         </div>

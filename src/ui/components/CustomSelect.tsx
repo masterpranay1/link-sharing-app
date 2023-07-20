@@ -1,16 +1,16 @@
 import Select, { components, ControlProps, Props } from "react-select";
 import clsx from "clsx";
+import PlatformIcon from "../../assets/platform-icon.png";
 
 const Control = ({ children, ...props }: ControlProps<any, false>) => {
   // @ts-ignore
   const { iconUrl } = props.selectProps;
-  const style = { cursor: "pointer", marginRight: "1em" };
+  const style = { cursor: "pointer", marginRight: "1rem" };
 
   return (
     <components.Control {...props}>
       <span style={style}>
-        <img src={iconUrl} />
-        Image
+        <img src={PlatformIcon} alt="link-icon" className="w-6 h-6"/>
       </span>
       {children}
     </components.Control>
@@ -24,8 +24,8 @@ const CustomSelect = (props: Props<any>) => {
 
   const options: any[] = [
     {
-      value: "Youtube",
-      label: "Youtube",
+      value: "Twitter",
+      label: "Twitter",
     },
     {
       value: "Github",
