@@ -50,7 +50,7 @@ export default function Preview() {
       <div className="w-full h-fit">
         <div className="w-full pb-12 md:pb-32 bg-slate-100 p-4">
           <header className="bg-white p-4 rounded-lg flex justify-between">
-            <button className="border w-24 md:w-32 px-4 py-2 border-violet-400 text-violet-400 rounded-lg hover:bg-violet-400 hover:text-white transition-all text-sm">
+            <button className="border w-24 md:w-32 border-violet-400 text-violet-400 rounded-lg hover:bg-violet-400 hover:text-white transition-all text-sm">
               <Link
                 onClick={handleClick}
                 to={(() => {
@@ -59,7 +59,7 @@ export default function Preview() {
                       ?.url || "/"
                   );
                 })()}
-                className="w-full h-full flex items-center justify-center"
+                className="px-4 py-2 w-full h-full flex items-center justify-center"
               >
                 Back
               </Link>
