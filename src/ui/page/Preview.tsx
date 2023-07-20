@@ -32,10 +32,10 @@ const Button = ({
 };
 
 export default function Preview() {
-  const { dispatchNavLink } = useGlobal();
+  const { navState, dispatchNavLink } = useGlobal();
 
   const handleClick = () => {
-    dispatchNavLink(NAVLINKSDATA[2].id);
+    dispatchNavLink(navState.previousId);
   };
 
   return (
@@ -46,7 +46,9 @@ export default function Preview() {
             <button className="border w-24 md:w-32 px-4 py-2 border-violet-400 text-violet-400 rounded-lg hover:bg-violet-400 hover:text-white transition-all text-sm">
               <Link
                 onClick={handleClick}
-                to={NAVLINKSDATA[2].url}
+                to={(() => {
+                  return NAVLINKSDATA.find((item) => item.id === navState.previousId)?.url || "/";
+                })()}
                 className="w-full h-full flex items-center justify-center"
               >
                 Back

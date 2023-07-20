@@ -1,19 +1,21 @@
 import { useReducer } from "react";
 
-interface NavLinksState {
+export interface NavLinksState {
   id: string | null;
+  previousId : string | undefined
 }
 
 interface Action {
   type: string;
 }
 
-interface NavAction extends Action {
+export interface NavAction extends Action {
   id: string;
 }
 
-const NAVINITIALVALUE: { id: string | null } = {
+const NAVINITIALVALUE: NavLinksState = {
   id: 'links',
+  previousId : undefined
 };
 
 function navLinksReducer(state: NavLinksState, action: NavAction) {
@@ -22,6 +24,7 @@ function navLinksReducer(state: NavLinksState, action: NavAction) {
       return {
         ...state,
         id: action.id,
+        previousId : state.id as string
       };
     default : 
       return state;
