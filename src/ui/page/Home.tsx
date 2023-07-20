@@ -1,39 +1,41 @@
-import { Routes, Route } from "react-router-dom";
+import { Header } from "../components";
+import { useGlobal } from "../../services/context";
+import { useNavigate } from "react-router-dom";
 
-import { Header, LinkForm, MockupPreview, Profile } from "../components"
+const Hero = () => {
+  const { dispatchNavLink } = useGlobal();
+  const navigate = useNavigate()
 
-const LinksView = () => {
+  const handleClick = () => {
+    dispatchNavLink("login");
+    navigate("/login");
+  };
+
   return (
-    <div className="flex flex-row gap-4 mt-4 p-4 sm:p-0">
-      <div className="hidden md:flex md:w-1/3 relative">
-        <MockupPreview className="w-full h-[calc(100vh-2rem)] sticky top-4" />
-      </div>
-      <LinkForm className="w-full md:w-2/3" />
+    <div className="bg-white px-4 py-12 shadow rounded-lg mt-4 flex flex-col gap-4 md:gap-8 items-center justify-center mx-4 sm:mx-0 h-[80vh]">
+      <h1 className="text-3xl sm:text-4xl lg:text-5xl max-w-md lg:max-w-lg text-slate-500 font-extrabold text-center">
+        Showcase you Important <span className="text-blue-400">Links.</span>
+      </h1>
+      <p className="text-center text-sm sm:text-base lg:text-lg max-w-sm text-slate-400">
+        <span className="text-blue-">Devlinks</span> is a tool for connecting
+        your audience to all of your content with just one link.
+      </p>
+
+      <button
+        onClick={handleClick}
+        className="border rounded-lg px-4 py-2 mt-8 hover:bg-slate-200"
+      >
+        Get Started
+      </button>
     </div>
   );
 };
 
-const ProfileView = () => {
-  return (
-    <div className="flex flex-row gap-4 mt-4 p-4 sm:p-0">
-      <div className="hidden md:flex md:w-1/3 relative">
-        <MockupPreview className="w-full h-[calc(100vh-2rem)] sticky top-4" />
-      </div>
-      <Profile className="w-full md:w-2/3"/>
-    </div>
-  );
-}
-
 export default function Home() {
   return (
-    <>
-      <div className="bg-slate-100 sm:p-4">
-        <Header />
-        <Routes>
-          <Route path="/links?" element={<LinksView />} />
-          <Route path="/profile" element={<ProfileView />} />
-        </Routes>
-      </div>
-    </>
+    <div className="bg-slate-100 sm:p-4 min-h-screen">
+      <Header />
+      <Hero />
+    </div>
   );
 }

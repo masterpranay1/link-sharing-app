@@ -1,7 +1,8 @@
-import Home from "./Home";
 import Preview from "./Preview";
 import Dashboard from "./Dashboard";
 import Auth from "./Auth";
-import Landing from "./Landing";
+import Home from "./Home";
+import Link from "./Links";
+import Profile from "./Profile"
 
-export { Home, Preview, Dashboard, Auth, Landing };
+export { Preview, Dashboard, Auth, Home, Link, Profile };
