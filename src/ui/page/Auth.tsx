@@ -3,54 +3,54 @@ import { useGlobal } from "../../services/context";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-
   const { dispatchNavLink } = useGlobal();
   const navigate = useNavigate();
 
   const handleClick = () => {
-    dispatchNavLink('register');
+    dispatchNavLink("register");
     navigate("/register");
   };
 
-  return <div className="bg-white shadow mx-4 sm:mx-0 rounded-lg p-4 h-[80vmax] md:h-[80vmin] flex flex-col items-center">
-    <h1 className="font-bold text-slate-600 text-lg mt-8">
-      Login
-    </h1>
+  return (
+    <div className="bg-white shadow mx-4 sm:mx-0 rounded-lg p-4 h-[80vmax] md:h-[80vmin] flex flex-col items-center">
+      <h1 className="font-bold text-slate-600 text-lg mt-8">Login</h1>
 
-    <div className="w-8 h-1 rounded-full bg-slate-200">
-    </div>
+      <div className="w-8 h-1 rounded-full bg-slate-200"></div>
 
-    <form className="flex flex-col gap-2 mt-8 w-full max-w-2xl">
-      <label htmlFor="email" className="text-slate-500">
-        Email
-      </label>
-      <input
-        type="email"
-        name="email"
-        id="email"
-        className="border rounded-lg px-4 py-2 w-full"
-      />
+      <form className="flex flex-col gap-2 mt-8 w-full max-w-2xl">
+        <label htmlFor="email" className="text-slate-500">
+          Email
+        </label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          className="border rounded-lg px-4 py-2 w-full"
+        />
 
-      <label htmlFor="password" className="text-slate-500">
-        Password
-      </label>
-      <input
-        type="password"
-        name="password"
-        id="password"
-        className="border rounded-lg px-4 py-2 w-full"
-      />
+        <label htmlFor="password" className="text-slate-500">
+          Password
+        </label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          className="border rounded-lg px-4 py-2 w-full"
+        />
 
-      <button className="w-full border rounded-lg px-4 py-2 mt-4 bg-slate-200  hover:bg-white">
-        Login
+        <button className="w-full border rounded-lg px-4 py-2 mt-4 bg-slate-200  hover:bg-white">
+          Login
+        </button>
+      </form>
+
+      <button
+        onClick={handleClick}
+        className="text-slate-600 hover:underline mt-4"
+      >
+        Register
       </button>
-    </form>
-
-    <button onClick={handleClick} className="text-slate-600 hover:underline mt-4">
-      Register
-    </button>
-    
-  </div>;
+    </div>
+  );
 }
 
 function Register() {
@@ -58,48 +58,49 @@ function Register() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    dispatchNavLink('login');
+    dispatchNavLink("login");
     navigate("/login");
   };
-  return <div className="bg-white shadow mx-4 sm:mx-0 rounded-lg p-4 h-[80vmax] md:h-[80vmin] flex flex-col items-center">
-  <h1 className="font-bold text-slate-600 text-lg mt-8">
-    Register
-  </h1>
+  return (
+    <div className="bg-white shadow mx-4 sm:mx-0 rounded-lg p-4 h-[80vmax] md:h-[80vmin] flex flex-col items-center">
+      <h1 className="font-bold text-slate-600 text-lg mt-8">Register</h1>
 
-  <div className="w-8 h-1 rounded-full bg-slate-200">
-  </div>
+      <div className="w-8 h-1 rounded-full bg-slate-200"></div>
 
-  <form className="flex flex-col gap-2 mt-8 w-full max-w-2xl">
-    <label htmlFor="email" className="text-slate-500">
-      Email
-    </label>
-    <input
-      type="email"
-      name="email"
-      id="email"
-      className="border rounded-lg px-4 py-2 w-full"
-    />
+      <form className="flex flex-col gap-2 mt-8 w-full max-w-2xl">
+        <label htmlFor="email" className="text-slate-500">
+          Email
+        </label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          className="border rounded-lg px-4 py-2 w-full"
+        />
 
-    <label htmlFor="password" className="text-slate-500">
-      Password
-    </label>
-    <input
-      type="password"
-      name="password"
-      id="password"
-      className="border rounded-lg px-4 py-2 w-full"
-    />
+        <label htmlFor="password" className="text-slate-500">
+          Password
+        </label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          className="border rounded-lg px-4 py-2 w-full"
+        />
 
-    <button className="w-full border rounded-lg px-4 py-2 mt-4 bg-slate-200  hover:bg-white">
-      Register
-    </button>
-  </form>
+        <button className="w-full border rounded-lg px-4 py-2 mt-4 bg-slate-200  hover:bg-white">
+          Register
+        </button>
+      </form>
 
-  <button onClick={handleClick} className="text-slate-600 hover:underline mt-4">
-    Login
-  </button>
-  
-</div>;
+      <button
+        onClick={handleClick}
+        className="text-slate-600 hover:underline mt-4"
+      >
+        Login
+      </button>
+    </div>
+  );
 }
 
 export default function Auth() {
