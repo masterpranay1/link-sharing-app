@@ -73,16 +73,6 @@ const Nav = () => {
           >
             <span className="">Login</span>
           </button>
-          <button
-            className={`px-4 py-2 rounded-lg ${
-              NAVLINKSDATA[4]?.id == navState?.id
-                ? "bg-violet-100 text-violet-400"
-                : ""
-            }`}
-            onClick={() => handleClick(NAVLINKSDATA[4].id)}
-          >
-            <span className="">Register</span>
-          </button>
         </>
       )}
     </nav>
@@ -90,11 +80,19 @@ const Nav = () => {
 };
 
 export default function Header() {
+  const { dispatchNavLink } = useGlobal();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    dispatchNavLink("home");
+    navigate("/");
+  };
+
   return (
     <header className="bg-white flex flex-row gap-4 p-4 shadow sm:rounded-lg">
       <div className="logo flex items-center gap-2 w-fit">
         <img src={Logo} className="w-8 h-8" alt="devlinks" />
-        <h1 className="hidden sm:block text-2xl font-bold">devlinks</h1>
+        <h1 className="hidden sm:block text-2xl font-bold cursor-pointer" onClick={handleClick}>devlinks</h1>
       </div>
 
       <Nav />
