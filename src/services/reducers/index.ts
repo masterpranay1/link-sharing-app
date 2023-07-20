@@ -14,7 +14,7 @@ export interface NavAction extends Action {
 }
 
 const NAVINITIALVALUE: NavLinksState = {
-  id: "login",
+  id: "home",
   previousId: undefined,
 };
 

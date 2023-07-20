@@ -18,5 +18,9 @@ export const NAVLINKSDATA: { id: string; url: string }[] = [
   {
     id: "register",
     url: "/register",
+  },
+  {
+    id: 'home',
+    url: '/'
   }
 ];
