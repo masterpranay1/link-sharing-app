@@ -17,12 +17,12 @@ export const getUserStore = () => {
       };
 };
 
-export const setLinkStore = (id: string) => {
+export const setLinkStore = (id: string, previousId: string) => {
   localStorage.setItem(
     "links",
     JSON.stringify({
       id,
-      previousId: getLinkStore().id,
+      previousId
     })
   );
 };

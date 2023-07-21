@@ -34,7 +34,7 @@ const USERINITIALVALUE: UserState = getUserStore();
 function navLinksReducer(state: NavLinksState, action: NavAction) {
   switch (action.type) {
     case "update-link":
-      setLinkStore(action.id);
+      setLinkStore(action.id, state.id as string);
       return {
         ...state,
         id: action.id,
