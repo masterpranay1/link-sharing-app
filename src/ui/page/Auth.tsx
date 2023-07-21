@@ -10,7 +10,7 @@ import { User } from "../../domain/user";
 import { useState } from "react";
 
 function Login() {
-  const { dispatchNavLink } = useGlobal();
+  const { dispatchNavLink, dispatchUser } = useGlobal();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<User>({
@@ -30,7 +30,13 @@ function Login() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    await emailLoginUser(formData);
+    const userId = await emailLoginUser(formData);
+
+    if(userId) {
+      dispatchNavLink("links");
+      dispatchUser(userId);
+      navigate("/links");
+    }
   };
 
   const handleClick = () => {
@@ -85,7 +91,7 @@ function Login() {
 }
 
 function Register() {
-  const { dispatchNavLink } = useGlobal();
+  const { dispatchNavLink, dispatchUser } = useGlobal();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<User>({
@@ -105,7 +111,13 @@ function Register() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    await createUser(formData);
+    const userId = await createUser(formData);
+
+    if(userId) {
+      dispatchNavLink("links");
+      dispatchUser(userId);
+      navigate("/links");
+    }
   };
 
   const handleClick = () => {
@@ -166,7 +178,13 @@ function Register() {
 }
 
 export default function Auth() {
-  const { navState } = useGlobal();
+  const { navState, userState, dispatchNavLink } = useGlobal();
+  const navigate = useNavigate();
+
+  if (userState.id) {
+    navigate("/links");
+    dispatchNavLink("links")
+  }
 
   return (
     <div className="flex flex-col gap-4 p-0 sm:p-4 bg-slate-100 pb-4">
