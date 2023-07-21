@@ -2,9 +2,36 @@ import { Header } from "../components";
 import { useGlobal } from "../../services/context";
 import { useNavigate } from "react-router-dom";
 
+import {
+  useCreateUser,
+  useEmailLoginUser,
+} from "../../application/useUserAuth";
+import { User } from "../../domain/user";
+import { useState } from "react";
+
 function Login() {
   const { dispatchNavLink } = useGlobal();
   const navigate = useNavigate();
+
+  const [formData, setFormData] = useState<User>({
+    email: "",
+    password: "",
+  });
+
+  const emailLoginUser = useEmailLoginUser()
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    await emailLoginUser(formData);
+  };
 
   const handleClick = () => {
     dispatchNavLink("register");
@@ -17,7 +44,7 @@ function Login() {
 
       <div className="w-8 h-1 rounded-full bg-slate-200"></div>
 
-      <form className="flex flex-col gap-2 mt-8 w-full max-w-2xl">
+      <form className="flex flex-col gap-2 mt-8 w-full max-w-2xl" onSubmit={handleSubmit}>
         <label htmlFor="email" className="text-slate-500">
           Email
         </label>
@@ -25,6 +52,8 @@ function Login() {
           type="email"
           name="email"
           id="email"
+          value={formData.email}
+          onChange={handleChange}
           className="border rounded-lg px-4 py-2 w-full"
         />
 
@@ -35,6 +64,8 @@ function Login() {
           type="password"
           name="password"
           id="password"
+          value={formData.password}
+          onChange={handleChange}
           className="border rounded-lg px-4 py-2 w-full"
         />
 
@@ -57,17 +88,41 @@ function Register() {
   const { dispatchNavLink } = useGlobal();
   const navigate = useNavigate();
 
+  const [formData, setFormData] = useState<User>({
+    email: "",
+    password: "",
+  });
+
+  const createUser = useCreateUser();
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    await createUser(formData);
+  };
+
   const handleClick = () => {
     dispatchNavLink("login");
     navigate("/login");
   };
+
   return (
     <div className="bg-white shadow mx-4 sm:mx-0 rounded-lg p-4 h-[80vmax] md:h-[80vmin] flex flex-col items-center">
       <h1 className="font-bold text-slate-600 text-lg mt-8">Register</h1>
 
       <div className="w-8 h-1 rounded-full bg-slate-200"></div>
 
-      <form className="flex flex-col gap-2 mt-8 w-full max-w-2xl">
+      <form
+        className="flex flex-col gap-2 mt-8 w-full max-w-2xl"
+        onSubmit={handleSubmit}
+      >
         <label htmlFor="email" className="text-slate-500">
           Email
         </label>
@@ -75,6 +130,8 @@ function Register() {
           type="email"
           name="email"
           id="email"
+          value={formData.email}
+          onChange={handleChange}
           className="border rounded-lg px-4 py-2 w-full"
         />
 
@@ -85,10 +142,15 @@ function Register() {
           type="password"
           name="password"
           id="password"
+          value={formData.password}
+          onChange={handleChange}
           className="border rounded-lg px-4 py-2 w-full"
         />
 
-        <button className="w-full border rounded-lg px-4 py-2 mt-4 bg-slate-200  hover:bg-white">
+        <button
+          type="submit"
+          className="w-full border rounded-lg px-4 py-2 mt-4 bg-slate-200  hover:bg-white"
+        >
           Register
         </button>
       </form>
