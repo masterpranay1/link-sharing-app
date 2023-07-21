@@ -1,6 +1,6 @@
 import { Header } from "../components";
 import { useGlobal } from "../../services/context";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   useCreateUser,
@@ -180,10 +180,15 @@ function Register() {
 export default function Auth() {
   const { navState, userState, dispatchNavLink } = useGlobal();
   const navigate = useNavigate();
+  const { pathname } = useLocation()
 
   if (userState.id) {
     navigate("/links");
     dispatchNavLink("links")
+  }
+
+  if (pathname !== navState.url) {
+    dispatchNavLink(pathname);
   }
 
   return (

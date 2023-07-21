@@ -1,4 +1,6 @@
 import { Header, LinkForm, MockupPreview } from "../components"
+import { useGlobal } from "../../services/context"
+import { useLocation } from "react-router-dom"
 
 const LinksView = () => {
   return (
@@ -12,6 +14,12 @@ const LinksView = () => {
 };
 
 export default function Links() {
+  const { dispatchNavLink, navState } = useGlobal()
+  const { pathname } = useLocation()
+
+  if(pathname !== navState.url) {
+    dispatchNavLink("profile")
+  }
   return (
     <>
       <div className="bg-slate-100 sm:p-4">

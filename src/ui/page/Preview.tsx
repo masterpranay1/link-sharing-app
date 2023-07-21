@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import RightArrow from "../../assets/right-arrow.png";
 import DPImage from "../../assets/dp.jpeg";
@@ -25,7 +26,10 @@ const Button = ({
     <button
       className={`flex flex-row gap-4 items-center justify-center ${bgcolor} ${textColor} px-6 py-4 rounded-lg`}
     >
-      <img src={imageUrl} className="w-8 h-8 rounded-full border border-white" />
+      <img
+        src={imageUrl}
+        className="w-8 h-8 rounded-full border border-white"
+      />
       <div className="block">{text}</div>
       <img
         width="24"
@@ -40,10 +44,15 @@ const Button = ({
 
 export default function Preview() {
   const { navState, dispatchNavLink } = useGlobal();
+  const { pathname } = useLocation();
 
   const handleClick = () => {
     dispatchNavLink(navState.previousId);
   };
+
+  if (pathname !== navState.url) {
+    dispatchNavLink("profile");
+  }
 
   return (
     <>
