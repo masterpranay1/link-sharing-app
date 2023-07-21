@@ -1,3 +1,4 @@
+// @ts-ignore
 import { Account, Client } from "appwrite";
 
 const client = new Client();
