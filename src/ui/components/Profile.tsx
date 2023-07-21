@@ -1,5 +1,6 @@
 import { useGlobal } from "../../services/context";
 import { useNavigate } from "react-router-dom";
+import { notifySuccess } from "../../services/notification";
 
 export default function Profile({ className }: { className?: string }) {
   const { dispatchUser } = useGlobal();
@@ -7,6 +8,7 @@ export default function Profile({ className }: { className?: string }) {
 
   const handleClick = () => {
     dispatchUser(null);
+    notifySuccess("Logged out successfully");
     navigate("/login");
   }
 
