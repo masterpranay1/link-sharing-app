@@ -1,4 +1,10 @@
 import { useReducer } from "react";
+import {
+  getUserStore,
+  setUserStore,
+  getLinkStore,
+  setLinkStore,
+} from "../localstore";
 
 export interface NavLinksState {
   id: string | null;
@@ -13,10 +19,7 @@ export interface NavAction extends Action {
   id: string;
 }
 
-const NAVINITIALVALUE: NavLinksState = {
-  id: "home",
-  previousId: undefined,
-};
+const NAVINITIALVALUE: NavLinksState = getLinkStore();
 
 export interface UserState {
   id: string | null;
@@ -26,13 +29,12 @@ export interface UserAction extends Action {
   id: string;
 }
 
-const USERINITIALVALUE: UserState = {
-  id: null,
-};
+const USERINITIALVALUE: UserState = getUserStore();
 
 function navLinksReducer(state: NavLinksState, action: NavAction) {
   switch (action.type) {
     case "update-link":
+      setLinkStore(action.id);
       return {
         ...state,
         id: action.id,
@@ -46,6 +48,7 @@ function navLinksReducer(state: NavLinksState, action: NavAction) {
 function userReducer(state: UserState, action: UserAction) {
   switch (action.type) {
     case "update-user":
+      setUserStore(action.id);
       return {
         ...state,
         id: action.id,
