@@ -11,7 +11,7 @@ const ProfileView = () => {
   );
 };
 
-export default function Home() {
+export default function ProfilePage() {
   return (
     <div className="bg-slate-100 sm:p-4">
       <Header />
