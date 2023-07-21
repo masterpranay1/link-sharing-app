@@ -1,6 +1,6 @@
 import { Header, LinkForm, MockupPreview } from "../components";
 import { useGlobal } from "../../services/context";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const LinksView = () => {
@@ -17,6 +17,7 @@ const LinksView = () => {
 export default function Links() {
   const { dispatchNavLink, navState, userState } = useGlobal();
   const { pathname } = useLocation();
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (pathname.slice(1) !== navState.id) {
@@ -27,6 +28,7 @@ export default function Links() {
   useEffect(() => {
     if (userState.id === null) {
       dispatchNavLink("login");
+      navigate("/login");
     }
   }, [userState]);
 
