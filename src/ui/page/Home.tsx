@@ -35,9 +35,12 @@ export default function Home() {
   const { dispatchNavLink, navState } = useGlobal()
   const { pathname } = useLocation()
 
-  if(pathname !== navState.url) {
+  console.log(pathname, navState.url)
+
+  if(pathname !== "/") {
     dispatchNavLink("home")
   }
+
   return (
     <div className="bg-slate-100 sm:p-4 min-h-screen">
       <Header />

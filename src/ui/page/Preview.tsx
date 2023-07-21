@@ -50,8 +50,8 @@ export default function Preview() {
     dispatchNavLink(navState.previousId);
   };
 
-  if (pathname !== navState.url) {
-    dispatchNavLink("profile");
+  if (pathname !== navState.id) {
+    dispatchNavLink("preview");
   }
 
   return (

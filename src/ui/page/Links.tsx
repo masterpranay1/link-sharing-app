@@ -17,8 +17,8 @@ export default function Links() {
   const { dispatchNavLink, navState } = useGlobal()
   const { pathname } = useLocation()
 
-  if(pathname !== navState.url) {
-    dispatchNavLink("profile")
+  if(pathname !== navState.id) {
+    dispatchNavLink("links")
   }
   return (
     <>

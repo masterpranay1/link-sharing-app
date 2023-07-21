@@ -18,7 +18,7 @@ export default function ProfilePage() {
   const { dispatchNavLink, navState } = useGlobal()
   const { pathname } = useLocation()
 
-  if(pathname !== navState.url) {
+  if(pathname !== navState.id) {
     dispatchNavLink("profile")
   }
 
