@@ -19,7 +19,7 @@ export default function Links() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    if (pathname !== navState.id) {
+    if (pathname.slice(1) !== navState.id) {
       dispatchNavLink("links");
     }
   }, []);
