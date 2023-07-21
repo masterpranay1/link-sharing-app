@@ -7,7 +7,7 @@ import {
   useEmailLoginUser,
 } from "../../application/useUserAuth";
 import { User } from "../../domain/user";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Login() {
   const { dispatchNavLink, dispatchUser } = useGlobal();
@@ -18,7 +18,7 @@ function Login() {
     password: "",
   });
 
-  const emailLoginUser = useEmailLoginUser()
+  const emailLoginUser = useEmailLoginUser();
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -32,7 +32,7 @@ function Login() {
     e.preventDefault();
     const userId = await emailLoginUser(formData);
 
-    if(userId) {
+    if (userId) {
       dispatchNavLink("links");
       dispatchUser(userId);
       navigate("/links");
@@ -50,7 +50,10 @@ function Login() {
 
       <div className="w-8 h-1 rounded-full bg-slate-200"></div>
 
-      <form className="flex flex-col gap-2 mt-8 w-full max-w-2xl" onSubmit={handleSubmit}>
+      <form
+        className="flex flex-col gap-2 mt-8 w-full max-w-2xl"
+        onSubmit={handleSubmit}
+      >
         <label htmlFor="email" className="text-slate-500">
           Email
         </label>
@@ -113,7 +116,7 @@ function Register() {
     e.preventDefault();
     const userId = await createUser(formData);
 
-    if(userId) {
+    if (userId) {
       dispatchNavLink("links");
       dispatchUser(userId);
       navigate("/links");
@@ -180,16 +183,17 @@ function Register() {
 export default function Auth() {
   const { navState, userState, dispatchNavLink } = useGlobal();
   const navigate = useNavigate();
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
 
-  if (userState.id) {
-    navigate("/links");
-    dispatchNavLink("links")
-  }
-
-  if (pathname !== navState.url) {
-    dispatchNavLink(pathname);
-  }
+  useEffect(() => {
+    if (pathname !== navState.id) {
+      dispatchNavLink(pathname.slice(1));
+    }
+    if (userState.id) {
+      navigate("/links");
+      dispatchNavLink("links");
+    }
+  }, []);
 
   return (
     <div className="flex flex-col gap-4 p-0 sm:p-4 bg-slate-100 pb-4">

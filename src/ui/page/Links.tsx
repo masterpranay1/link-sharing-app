@@ -1,6 +1,7 @@
-import { Header, LinkForm, MockupPreview } from "../components"
-import { useGlobal } from "../../services/context"
-import { useLocation } from "react-router-dom"
+import { Header, LinkForm, MockupPreview } from "../components";
+import { useGlobal } from "../../services/context";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 const LinksView = () => {
   return (
@@ -14,12 +15,15 @@ const LinksView = () => {
 };
 
 export default function Links() {
-  const { dispatchNavLink, navState } = useGlobal()
-  const { pathname } = useLocation()
+  const { dispatchNavLink, navState } = useGlobal();
+  const { pathname } = useLocation();
 
-  if(pathname !== navState.id) {
-    dispatchNavLink("links")
-  }
+  useEffect(() => {
+    if (pathname !== navState.id) {
+      dispatchNavLink("links");
+    }
+  }, []);
+
   return (
     <>
       <div className="bg-slate-100 sm:p-4">

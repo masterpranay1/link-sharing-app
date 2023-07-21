@@ -32,10 +32,8 @@ const Hero = () => {
 };
 
 export default function Home() {
-  const { dispatchNavLink, navState } = useGlobal()
+  const { dispatchNavLink } = useGlobal()
   const { pathname } = useLocation()
-
-  console.log(pathname, navState.url)
 
   if(pathname !== "/") {
     dispatchNavLink("home")

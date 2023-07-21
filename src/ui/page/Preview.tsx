@@ -8,6 +8,7 @@ import { useGlobal } from "../../services/context";
 import LinkedinIcon from "../../assets/linkedin-icon.png";
 import TwitterIcon from "../../assets/twitter-icon.png";
 import GithubIcon from "../../assets/github-icon.png";
+import { useEffect } from "react";
 
 interface IButtonProps {
   text: string;
@@ -50,9 +51,11 @@ export default function Preview() {
     dispatchNavLink(navState.previousId);
   };
 
-  if (pathname !== navState.id) {
-    dispatchNavLink("preview");
-  }
+  useEffect(() => {
+    if (pathname !== navState.id) {
+      dispatchNavLink("preview");
+    }
+  }, [])
 
   return (
     <>
