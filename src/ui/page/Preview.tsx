@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import RightArrow from "../../assets/right-arrow.png";
 import DPImage from "../../assets/dp.jpeg";
@@ -44,8 +44,9 @@ const Button = ({
 };
 
 export default function Preview() {
-  const { navState, dispatchNavLink } = useGlobal();
+  const { navState, dispatchNavLink, userState } = useGlobal();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const handleClick = () => {
     dispatchNavLink(navState.previousId);
@@ -56,6 +57,13 @@ export default function Preview() {
       dispatchNavLink("preview");
     }
   }, [])
+
+  useEffect(() => {
+    if (userState.id === null) {
+      dispatchNavLink("login");
+      navigate("/login");
+    }
+  }, [userState]);
 
   return (
     <>

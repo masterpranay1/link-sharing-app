@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useGlobal } from "../../services/context";
 import { Header, MockupPreview, Profile } from "../components";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ProfileView = () => {
   return (
@@ -15,14 +15,22 @@ const ProfileView = () => {
 };
 
 export default function ProfilePage() {
-  const { dispatchNavLink, navState } = useGlobal();
+  const { dispatchNavLink, navState, userState } = useGlobal();
   const { pathname } = useLocation();
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (pathname.slice(1) !== navState.id) {
       dispatchNavLink("profile");
     }
   }, []);
+
+  useEffect(() => {
+    if (userState.id === null) {
+      dispatchNavLink("login");
+      navigate("/login");
+    }
+  }, [userState]);
 
   return (
     <div className="bg-slate-100 sm:p-4">

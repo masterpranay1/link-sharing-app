@@ -15,7 +15,7 @@ const LinksView = () => {
 };
 
 export default function Links() {
-  const { dispatchNavLink, navState } = useGlobal();
+  const { dispatchNavLink, navState, userState } = useGlobal();
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -23,6 +23,12 @@ export default function Links() {
       dispatchNavLink("links");
     }
   }, []);
+
+  useEffect(() => {
+    if (userState.id === null) {
+      dispatchNavLink("login");
+    }
+  }, [userState]);
 
   return (
     <>
