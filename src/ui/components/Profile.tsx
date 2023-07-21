@@ -1,4 +1,15 @@
+import { useGlobal } from "../../services/context";
+import { useNavigate } from "react-router-dom";
+
 export default function Profile({ className }: { className?: string }) {
+  const { dispatchUser } = useGlobal();
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    dispatchUser(null);
+    navigate("/login");
+  }
+
   return (
     <section className={`${className} bg-white rounded-lg px-4 py-4 relative`}>
       <h1 className="text-4xl text-slate-600 font-bold">Profile Details</h1>
@@ -81,8 +92,9 @@ export default function Profile({ className }: { className?: string }) {
         </div>
       </div>
 
-      <div className="py-4 border-t bg-white w-full bottom-0 left-0 flex">
-        <button className="w-full sm:w-fit ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold">
+      <div className="py-4 border-t bg-white w-full bottom-0 left-0 flex items-center gap-4">
+        <span onClick={handleClick} className="ml-auto inline-block cursor-pointer text-slate-500 hover:text-slate-400">Log out</span>
+        <button className="w-full sm:w-fit bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold">
           Save
         </button>
       </div>
