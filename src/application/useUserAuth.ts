@@ -3,6 +3,7 @@ import { User } from "../domain/user";
 import {
   useCreateUserService,
   useEmailLoginUserService,
+  useLogoutService
 } from "../services/userAdapter";
 
 export function useCreateUser() {
@@ -23,4 +24,14 @@ export function useEmailLoginUser() {
   }
 
   return emailLoginUser
+}
+
+export function useLogoutUser() {
+  const logoutService = useLogoutService()
+
+  async function logoutUser() {
+    return logoutService.logoutUser()
+  }
+
+  return logoutUser
 }
