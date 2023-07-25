@@ -1,5 +1,5 @@
-import { Header } from "../components";
-import { useGlobal } from "../../services/context";
+import { Header } from "@/components";
+import { useGlobal } from "@/services/context";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import {

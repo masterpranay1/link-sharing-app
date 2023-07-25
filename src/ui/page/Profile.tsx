@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useGlobal } from "../../services/context";
-import { Header, MockupPreview, Profile } from "../components";
+import { useGlobal } from "@/services/context";
+import { Header, MockupPreview, Profile } from "@/components";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ProfileView = () => {

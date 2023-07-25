@@ -1,5 +1,5 @@
-import { Header } from "../components";
-import { useGlobal } from "../../services/context";
+import { Header } from "@/components";
+import { useGlobal } from "@/services/context";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Hero = () => {

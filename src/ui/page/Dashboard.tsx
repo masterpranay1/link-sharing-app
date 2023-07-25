@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useGlobal } from "../../services/context";
+import { useGlobal } from "@/services/context";
 import { useEffect } from "react";
 
 export default function Dashboard() {
