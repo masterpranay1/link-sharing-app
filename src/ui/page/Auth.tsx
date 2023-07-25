@@ -5,8 +5,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   useCreateUser,
   useEmailLoginUser,
-} from "../../application/useUserAuth";
-import { User } from "../../domain/user";
+} from "@/application/useUserAuth";
+import { User } from "@/domain/user";
 import { useState, useEffect } from "react";
 
 function Login() {
