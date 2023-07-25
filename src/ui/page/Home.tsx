@@ -1,5 +1,6 @@
 import { Header } from "@/components";
 import { useGlobal } from "@/services/context";
+import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Hero = () => {
@@ -32,12 +33,14 @@ const Hero = () => {
 };
 
 export default function Home() {
-  const { dispatchNavLink } = useGlobal()
+  const { dispatchNavLink, navState } = useGlobal()
   const { pathname } = useLocation()
-
-  if(pathname !== "/") {
-    dispatchNavLink("home")
-  }
+  
+  useEffect(() => {
+    if(pathname.slice(1) !== navState.id) {
+      dispatchNavLink("home")
+    }
+  }, [])
 
   return (
     <div className="bg-slate-100 sm:p-4 min-h-screen">
