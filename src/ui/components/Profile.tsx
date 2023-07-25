@@ -1,16 +1,71 @@
+import { useEffect, useState } from "react";
 import { useGlobal } from "../../services/context";
 import { useNavigate } from "react-router-dom";
-import { notifySuccess } from "../../services/notification";
+import { notifySuccess, notifyError } from "../../services/notification";
+import { useGetUserInfo, useSaveUserInfo } from "@/application/useUserInfo";
+import { useLogoutUser } from "@/application/useUserAuth";
 
 export default function Profile({ className }: { className?: string }) {
-  const { dispatchUser } = useGlobal();
-  const navigate = useNavigate()
+  const { dispatchUser, userState } = useGlobal();
+  const navigate = useNavigate();
+  const getUserInfo = useGetUserInfo();
+  const saveUserInfo = useSaveUserInfo();
+  const [userInfo, setUserInfo] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+  });
+  const [loading, setLoading] = useState(false);
 
-  const handleClick = () => {
-    dispatchUser(null);
-    notifySuccess("Logged out successfully");
-    navigate("/login");
+  const logoutUser = useLogoutUser();
+
+  useEffect(() => {
+    const getUser = async () => {
+      setLoading(true);
+      const res = await getUserInfo();
+      if (res) {
+        setUserInfo((prev) => {
+          return {
+            ...prev,
+            firstname: res.firstname as string,
+            lastname: res.lastname as string,
+            email: res.email as string,
+          };
+        });
+      }
+      setLoading(false);
+    };
+    getUser();
+  }, []);
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setUserInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   }
+
+  const handleSave = async (e: any) => {
+    e.preventDefault();
+    const res = await saveUserInfo({
+      userid: userState.id,
+      firstname: userInfo.firstname,
+      lastname: userInfo.lastname,
+    });
+
+    if (res) {
+      notifySuccess("Profile updated successfully");
+    } else {
+      notifyError("Something went wrong");
+    }
+  }
+
+  const handleClick = async () => {
+    await logoutUser();
+    dispatchUser(null);
+    navigate("/login");
+  };
 
   return (
     <section className={`${className} bg-white rounded-lg px-4 py-4 relative`}>
@@ -53,10 +108,12 @@ export default function Profile({ className }: { className?: string }) {
             </span>
             <input
               type="text"
-              name="first-name"
-              id="first-name"
-              placeholder="First Name"
+              name="firstname"
+              id="firstname"
+              placeholder={loading ? "Loading..." : "First Name"}
               className="input px-4 py-2 outline-none border rounded-lg"
+              value={userInfo.firstname}
+              onChange={handleChange}
             />
           </label>
 
@@ -69,10 +126,12 @@ export default function Profile({ className }: { className?: string }) {
             </span>
             <input
               type="text"
-              name="last-name"
-              id="last-name"
-              placeholder="Last Name"
+              name="lastname"
+              id="lastname"
+              placeholder={loading ? "Loading..." : "Last Name"}
               className="input px-4 py-2 outline-none border rounded-lg"
+              value={userInfo.lastname}
+              onChange={handleChange}
             />
           </label>
 
@@ -87,16 +146,23 @@ export default function Profile({ className }: { className?: string }) {
               type="email"
               name="email"
               id="email"
-              placeholder="Email"
+              placeholder={loading ? "Loading..." : "Email"}
               className="input px-4 py-2 outline-none border rounded-lg"
+              defaultValue={userInfo.email}
+              disabled
             />
           </label>
         </div>
       </div>
 
       <div className="py-4 border-t bg-white w-full bottom-0 left-0 flex items-center gap-4">
-        <span onClick={handleClick} className="ml-auto inline-block cursor-pointer text-slate-500 hover:text-slate-400">Log out</span>
-        <button className="w-full sm:w-fit bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold">
+        <span
+          onClick={() => handleClick()}
+          className="ml-auto inline-block cursor-pointer text-slate-500 hover:text-slate-400"
+        >
+          Log out
+        </span>
+        <button onClick={(e) => handleSave(e)} className="w-full sm:w-fit bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold">
           Save
         </button>
       </div>
