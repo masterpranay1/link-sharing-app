@@ -1,14 +1,15 @@
 import { account } from "../lib/appwrite";
 import { v4 as uuidv4 } from "uuid";
-import { ICreateUser, IEmailLoginUser } from "../application/ports";
+import { ICreateUser, IEmailLoginUser, ILogoutUser } from "../application/ports";
 import { notifyError, notifySuccess } from "./notification";
 
 export const useCreateUserService = (): ICreateUser => {
   const createUser = async (email: string, password: string) => {
     try {
-      const res = await account.create(uuidv4(), email, password);
+      await account.create(uuidv4(), email, password);
+      const res2 = await account.createEmailSession(email, password);
       notifySuccess("User created successfully");
-      return res.$id;
+      return res2.userId;
     } catch (error: any) {
       notifyError(error.message);
       return null;
@@ -23,7 +24,7 @@ export const useEmailLoginUserService = (): IEmailLoginUser => {
     try {
       const res = await account.createEmailSession(email, password);
       notifySuccess("Login successful");
-      return res.$id;
+      return res.userId;
     } catch (error: any) {
       notifyError(error.message);
       return null;
@@ -32,3 +33,16 @@ export const useEmailLoginUserService = (): IEmailLoginUser => {
 
   return { emailLoginUser };
 };
+
+export const useLogoutService = () : ILogoutUser => {
+  const logoutUser = async () => {
+    try {
+      await account.deleteSession("current");
+      notifySuccess("Logout successful");
+    } catch (error: any) {
+      notifyError(error.message);
+    }
+  };
+
+return { logoutUser };
+}
