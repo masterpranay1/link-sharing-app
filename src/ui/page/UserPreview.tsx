@@ -1,3 +1,5 @@
+import { useParams } from "react-router-dom";
+
 import RightArrow from "@/assets/right-arrow.png";
 import LinkedinIcon from "@/assets/linkedin-icon.png";
 import TwitterIcon from "@/assets/twitter-icon.png";
@@ -72,12 +74,10 @@ export default function UserPreview() {
     const getData = async () => {
       const res = await getUserPreview(id as string)
       if(!res) return;
-      setUserInfo((prev) => {
-        return {
-          firstname: res.firstName,
-          lastname: res.lastName,
-          profilepicture: res.profileImage
-        }
+      setUserInfo({
+        firstname: res.firstName,
+        lastname: res.lastName,
+        profilepicture: res.profileImage
       })
 
       setLinks(res.links)
