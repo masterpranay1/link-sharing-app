@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 
-import Logo from "../../assets/logo.png";
-import ProfileIcon from "../../assets/profile.png";
-import PreviewIcon from "../../assets/preview.png";
-import LinksIcon from "../../assets/link.png";
-import { NAVLINKSDATA } from "../../datasource/navlinks";
-import { useGlobal } from "../../services/context";
+import Logo from "@/assets/logo.png";
+import ProfileIcon from "@/assets/profile.png";
+import PreviewIcon from "@/assets/preview.png";
+import LinksIcon from "@/assets/link.png";
+import { NAVLINKSDATA } from "@/datasource/navlinks";
+import { useGlobal } from "@/services/context";
 
 const Nav = () => {
   const { navState, dispatchNavLink, userState } = useGlobal();

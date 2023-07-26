@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useGlobal } from "../../services/context";
+import { useGlobal } from "@/services/context";
 import { useNavigate } from "react-router-dom";
-import { notifySuccess, notifyError } from "../../services/notification";
+import { notifySuccess, notifyError } from "@/services/notification";
 import {
   useGetUserInfo,
   useSaveUserInfo,

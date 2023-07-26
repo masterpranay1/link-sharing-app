@@ -15,7 +15,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useState } from "react";
 import CustomSelect from "./CustomSelect";
-import LinkIcon from "../../assets/link-icon.png";
+import LinkIcon from "@/assets/link-icon.png";
 
 const LinkWrapper = ({ id }: { id: string }) => {
   const {

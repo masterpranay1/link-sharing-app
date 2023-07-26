@@ -1,6 +1,6 @@
 import Select, { components, ControlProps, Props } from "react-select";
 import clsx from "clsx";
-import PlatformIcon from "../../assets/platform-icon.png";
+import PlatformIcon from "@/assets/platform-icon.png";
 
 const Control = ({ children, ...props }: ControlProps<any, false>) => {
   // @ts-ignore
