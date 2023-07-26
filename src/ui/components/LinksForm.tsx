@@ -22,10 +22,14 @@ const LinkWrapper = ({
   id,
   index,
   removeItem,
+  onPlatformChange,
+  onUrlChange,
 }: {
   id: string;
   index: number;
-  removeItem: (id: string) => void
+  removeItem: (id: string) => void;
+  onPlatformChange: (value: string, id: string, isOther: boolean) => void;
+  onUrlChange: (value: string, id: string) => void;
 }) => {
   const {
     attributes,
@@ -37,6 +41,8 @@ const LinkWrapper = ({
   } = useSortable({ id, transition: null });
 
   const [isOtherSelected, setIsOtherSelected] = useState(false);
+  const [otherPlatform, setOtherPlatform] = useState();
+  const [url, setUrl] = useState();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -48,7 +54,18 @@ const LinkWrapper = ({
       setIsOtherSelected(true);
     } else {
       setIsOtherSelected(false);
+      // handlePlatformChange(e.value, id, false)
     }
+  };
+
+  const handleOtherPlatformChange = (e: any) => {
+    setOtherPlatform(e.target.value);
+    // handlePlatformChange(e.target.value, id, true)
+  };
+
+  const handleUrlChange = (e: any) => {
+    setUrl(e.target.value);
+    // handleUrlChange(e.target.value, id)
   };
 
   return (
@@ -58,7 +75,9 @@ const LinkWrapper = ({
           =
         </span>
         <span className="font-bold">Link #{index + 1}</span>
-        <span className="ml-auto cursor-pointer" onClick={() => removeItem(id)}>Remove</span>
+        <span className="ml-auto cursor-pointer" onClick={() => removeItem(id)}>
+          Remove
+        </span>
       </div>
 
       <div className="input_wrapper mt-2">
@@ -74,6 +93,8 @@ const LinkWrapper = ({
               name="other-platform-text"
               className="w-full focus:outline-none"
               placeholder="Enter the platform name"
+              value={otherPlatform}
+              onChange={handleOtherPlatformChange}
             />
           </label>
         )}
@@ -90,6 +111,9 @@ const LinkWrapper = ({
             type="text"
             className="w-full focus:outline-none"
             name="link"
+            placeholder="Enter the link"
+            value={url}
+            onChange={handleUrlChange}
           />
         </div>
       </div>
@@ -101,10 +125,14 @@ const LinkFormWrapper = ({
   formItems,
   setFormItems,
   removeItem,
+  onPlatformChange,
+  onUrlChange,
 }: {
   formItems: { id: string }[];
   setFormItems: any;
   removeItem: (id: string) => void;
+  onPlatformChange: (value: string, id: string, isOther: boolean) => void;
+  onUrlChange: (value: string, id: string) => void;
 }) => {
   // const [formItems, setFormItems] = useState(items);
 
@@ -139,31 +167,64 @@ const LinkFormWrapper = ({
     >
       <SortableContext items={formItems.map((item) => item.id)}>
         {formItems?.map((item, index) => (
-          <LinkWrapper id={item.id} key={index} index={index} removeItem={removeItem}/>
+          <LinkWrapper
+            id={item.id}
+            key={index}
+            index={index}
+            removeItem={removeItem}
+            onPlatformChange={onPlatformChange}
+            onUrlChange={onUrlChange}
+          />
         ))}
 
-        {
-          formItems.length === 0 && (
-            <div className="bg-slate-100 p-4 rounded">
-              <div className="flex gap-2 items-center justify-center text-slate-600 w-full">
-                <span className="font-bold text-center block">No links added yet</span>
-                <span className="text-2xl block">🥲🥹</span>
-              </div>
+        {formItems.length === 0 && (
+          <div className="bg-slate-100 p-4 rounded">
+            <div className="flex gap-2 items-center justify-center text-slate-600 w-full">
+              <span className="font-bold text-center block">
+                No links added yet
+              </span>
+              <span className="text-2xl block">🥲🥹</span>
             </div>
-          )
-        }
+          </div>
+        )}
       </SortableContext>
     </DndContext>
   );
 };
 
 export default function LinkForm({ className }: { className?: string }) {
-  const [formItems, setFormItems] = useState([
-    { id: "1" },
-    { id: "2" },
-    { id: "3" },
-  ]);
+  const [formItems, setFormItems] = useState<{ id: string }[]>([]);
 
+  const [links, setLinks] = useState<{ id: string; platform: string; url: string; isOther: boolean }[]>([]);
+
+  const handlePlatformChange = (
+    value: string,
+    id: string,
+    isOther: boolean
+  ) => {
+    setLinks((prevLinks) => {
+      const newLinks = [...prevLinks];
+      const linkToChange: { id: string; platform: string; url: string; isOther: boolean } | undefined = newLinks.find(
+        (link) => link.id === id
+      );
+      if (!linkToChange) return newLinks;
+      linkToChange.platform = value;
+      linkToChange.isOther = isOther;
+      return newLinks;
+    })
+  };
+
+  const handleUrlChange = (value: string, id: string) => {
+    setLinks((prevLinks) => {
+      const newLinks = [...prevLinks];
+      const linkToChange: { id: string; platform: string; url: string; isOther: boolean } | undefined = newLinks.find(
+        (link) => link.id === id
+      );
+      if (!linkToChange) return newLinks;
+      linkToChange.url = value;
+      return newLinks;
+    })
+  };
 
   const handleAddItem = () => {
     setFormItems((prevItems) => {
@@ -171,6 +232,12 @@ export default function LinkForm({ className }: { className?: string }) {
       newItems.push({ id: `${newItems.length + 1}` });
       return newItems;
     });
+
+    setLinks((prevLinks) => {
+      const newLinks = [...prevLinks];
+      newLinks.push({ id: `${newLinks.length + 1}`, platform: "", url: "", isOther: false });
+      return newLinks;
+    })
 
     notifySuccess("Link added successfully");
   };
@@ -185,6 +252,16 @@ export default function LinkForm({ className }: { className?: string }) {
       newItems.splice(newItems.indexOf(itemToRemove), 1);
       return newItems;
     });
+
+    setLinks((prevLinks) => {
+      const newLinks = [...prevLinks];
+      const linkToRemove: { id: string; platform: string; url: string; isOther: boolean } | undefined = newLinks.find(
+        (link) => link.id === id
+      );
+      if (!linkToRemove) return newLinks;
+      newLinks.splice(newLinks.indexOf(linkToRemove), 1);
+      return newLinks;
+    })
 
     notifySuccess("Link removed successfully");
   };
@@ -210,7 +287,13 @@ export default function LinkForm({ className }: { className?: string }) {
       </button>
 
       <div className="flex flex-col gap-4">
-        <LinkFormWrapper formItems={formItems} setFormItems={setFormItems} removeItem={handleRemoveItem}/>
+        <LinkFormWrapper
+          formItems={formItems}
+          setFormItems={setFormItems}
+          removeItem={handleRemoveItem}
+          onPlatformChange={handlePlatformChange}
+          onUrlChange={handleUrlChange}
+        />
       </div>
 
       <div className="py-4 border-t sticky bg-white w-full bottom-0 left-0 flex">
