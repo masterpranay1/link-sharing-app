@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Account, Client, Databases, Query } from "appwrite";
+import { Account, Client, Databases, Query, Storage } from "appwrite";
 
 const client = new Client();
 
@@ -10,3 +10,4 @@ client
 export const account = new Account(client);
 export const databases = new Databases(client);
 export const query = Query
+export const storage = new Storage(client)
