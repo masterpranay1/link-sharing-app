@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import CustomSelect from "./CustomSelect";
 import LinkIcon from "@/assets/link-icon.png";
 import { notifySuccess, notifyError } from "@/services/notification";
-import { useGetLinks, useSaveLink } from "@/application/useLink";
+import { useGetLinks, useSaveLink, useDeleteLink } from "@/application/useLink";
 
 const LinkWrapper = ({
   id,
@@ -220,6 +220,7 @@ const LinkFormWrapper = ({
 export default function LinkForm({ className }: { className?: string }) {
   const { getLinksHandler } = useGetLinks();
   const { saveLinkHandler } = useSaveLink();
+  const { deleteLinkHandler } = useDeleteLink();
 
   const [formItems, setFormItems] = useState<{ id: string }[]>([]);
 
@@ -290,7 +291,8 @@ export default function LinkForm({ className }: { className?: string }) {
     notifySuccess("Link added successfully");
   };
 
-  const handleRemoveItem = (id: string) => {
+  const handleRemoveItem = async (id: string) => {
+    notifySuccess("Link Removing in progress!!")
     setFormItems((prevItems) => {
       const newItems = [...prevItems];
       const itemToRemove: { id: string } | undefined = newItems.find(
@@ -311,12 +313,13 @@ export default function LinkForm({ className }: { className?: string }) {
       return newLinks;
     });
 
+    await deleteLinkHandler(id);
+
     notifySuccess("Link removed successfully");
   };
 
   const handleSubmit = () => {
-    console.log(links);
-
+    
     if (links.length === 0) {
       notifyError("Please add atleast one link");
       return;

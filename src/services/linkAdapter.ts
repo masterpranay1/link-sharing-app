@@ -1,7 +1,7 @@
 import { databases, query } from "@/lib/appwrite";
 import { v4 as uuidv4 } from "uuid";
 import { useGlobal } from "./context";
-import { ISaveLink, IGetLinks } from "@/application/ports";
+import { ISaveLink, IGetLinks, IDeleteLink } from "@/application/ports";
 import { notifyError } from "./notification";
 
 export function useSaveLinkService(): ISaveLink {
@@ -125,4 +125,56 @@ export function useGetLinkService(): IGetLinks {
   return {
     getLinks,
   };
+}
+
+export function useDeleteLinkService() : IDeleteLink {
+  const { userState } = useGlobal();
+  const deleteLink = async (id: string) => {
+    const databaseId = "64bf9d8d4b1287ddf27c";
+    const userInfoCollectionId = "64bf9d97eb4f5afce89e";
+    const linkCollectionId = "64bfa28bc3115acf0235";
+
+    try {
+
+      const res = await databases.listDocuments(databaseId, linkCollectionId, [
+        query.equal("$id", id),
+      ]);
+
+      if (res.documents.length === 0) {
+        return true;
+      }
+
+      const userInfo = await databases.listDocuments(
+        databaseId,
+        userInfoCollectionId,
+        [query.equal("userid", userState.id)]
+      );
+
+      if (userInfo.documents.length > 0) {
+        const links = userInfo.documents[0].links.filter((linkId: string) => linkId !== id);
+
+        await databases.updateDocument(
+          databaseId,
+          userInfoCollectionId,
+          userInfo.documents[0].$id,
+          {
+            links,
+          }
+        );
+
+        await databases.deleteDocument(databaseId, linkCollectionId, id);
+
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error: any) {
+      notifyError(error.message);
+      return false;
+    }
+  }
+
+  return {
+    deleteLink
+  }
 }

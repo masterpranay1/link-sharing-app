@@ -32,3 +32,7 @@ export interface ISaveLink {
 export interface IGetLinks {
   getLinks : () => Promise<ILink[] | null>
 }
+
+export interface IDeleteLink {
+  deleteLink : (id : string) => Promise<boolean>
+}

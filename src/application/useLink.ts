@@ -1,5 +1,5 @@
-import { useSaveLinkService, useGetLinkService } from "@/services/linkAdapter";
-import { ISaveLink, IGetLinks } from "./ports";
+import { useSaveLinkService, useGetLinkService, useDeleteLinkService } from "@/services/linkAdapter";
+import { ISaveLink, IGetLinks, IDeleteLink } from "./ports";
 import { ILink } from "@/domain/link";
 
 export const useSaveLink = () => {
@@ -21,4 +21,15 @@ export const useGetLinks = () => {
   }
 
   return { getLinksHandler };
+}
+
+export const useDeleteLink = () => {
+  const { deleteLink } : IDeleteLink = useDeleteLinkService();
+
+  async function deleteLinkHandler(id: string) {
+    const isDeleted: boolean = await deleteLink(id);
+    return isDeleted;
+  }
+
+  return { deleteLinkHandler };
 }
