@@ -16,7 +16,7 @@ import {
 import { useState } from "react";
 import CustomSelect from "./CustomSelect";
 import LinkIcon from "@/assets/link-icon.png";
-import { notifySuccess } from "@/services/notification";
+import { notifySuccess, notifyError } from "@/services/notification";
 
 const LinkWrapper = ({
   id,
@@ -41,8 +41,8 @@ const LinkWrapper = ({
   } = useSortable({ id, transition: null });
 
   const [isOtherSelected, setIsOtherSelected] = useState(false);
-  const [otherPlatform, setOtherPlatform] = useState();
-  const [url, setUrl] = useState();
+  const [otherPlatform, setOtherPlatform] = useState("");
+  const [url, setUrl] = useState("");
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -54,18 +54,18 @@ const LinkWrapper = ({
       setIsOtherSelected(true);
     } else {
       setIsOtherSelected(false);
-      // handlePlatformChange(e.value, id, false)
+      onPlatformChange(e.value, id, false)
     }
   };
 
   const handleOtherPlatformChange = (e: any) => {
     setOtherPlatform(e.target.value);
-    // handlePlatformChange(e.target.value, id, true)
+    onPlatformChange(e.target.value, id, true)
   };
 
   const handleUrlChange = (e: any) => {
     setUrl(e.target.value);
-    // handleUrlChange(e.target.value, id)
+    onUrlChange(e.target.value, id)
   };
 
   return (
@@ -266,6 +266,24 @@ export default function LinkForm({ className }: { className?: string }) {
     notifySuccess("Link removed successfully");
   };
 
+  const handleSubmit = () => {
+    console.log(links)
+
+    if(links.length === 0) {
+      notifyError("Please add atleast one link")
+      return
+    }
+
+    links.forEach(link => {
+      if (link.platform === "" || link.url === "") {
+        notifyError("Please fill all the fields")
+        return
+      }
+    })
+
+    // TODO : call the api to save the links data
+  }
+
   return (
     <div
       className={`flex flex-col gap-4 p-4 bg-white rounded-lg relative ${className}`}
@@ -297,7 +315,9 @@ export default function LinkForm({ className }: { className?: string }) {
       </div>
 
       <div className="py-4 border-t sticky bg-white w-full bottom-0 left-0 flex">
-        <button className="w-full sm:w-fit ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold">
+        <button
+        onClick={handleSubmit}
+         className="w-full sm:w-fit ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold">
           Submit
         </button>
       </div>
