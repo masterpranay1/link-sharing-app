@@ -16,8 +16,17 @@ import {
 import { useState } from "react";
 import CustomSelect from "./CustomSelect";
 import LinkIcon from "@/assets/link-icon.png";
+import { notifySuccess } from "@/services/notification";
 
-const LinkWrapper = ({ id, index }: { id: string; index: number }) => {
+const LinkWrapper = ({
+  id,
+  index,
+  removeItem,
+}: {
+  id: string;
+  index: number;
+  removeItem: (id: string) => void
+}) => {
   const {
     attributes,
     listeners,
@@ -49,7 +58,7 @@ const LinkWrapper = ({ id, index }: { id: string; index: number }) => {
           =
         </span>
         <span className="font-bold">Link #{index + 1}</span>
-        <span className="ml-auto">Remove</span>
+        <span className="ml-auto cursor-pointer" onClick={() => removeItem(id)}>Remove</span>
       </div>
 
       <div className="input_wrapper mt-2">
@@ -88,12 +97,16 @@ const LinkWrapper = ({ id, index }: { id: string; index: number }) => {
   );
 };
 
-const LinkFormWrapper = () => {
-  const [formItems, setFormItems] = useState([
-    { id: "1" },
-    { id: "2" },
-    { id: "3" },
-  ]);
+const LinkFormWrapper = ({
+  formItems,
+  setFormItems,
+  removeItem,
+}: {
+  formItems: { id: string }[];
+  setFormItems: any;
+  removeItem: (id: string) => void;
+}) => {
+  // const [formItems, setFormItems] = useState(items);
 
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -109,7 +122,7 @@ const LinkFormWrapper = () => {
       collisionDetection={closestCenter}
       onDragEnd={({ active, over }) => {
         if (active.id !== over?.id) {
-          setFormItems((prevItems) => {
+          setFormItems((prevItems: { id: string }[]) => {
             const newItems = [...prevItems];
             const draggedItem = newItems.find(
               (item) => item.id === active.id
@@ -126,7 +139,7 @@ const LinkFormWrapper = () => {
     >
       <SortableContext items={formItems.map((item) => item.id)}>
         {formItems.map((item, index) => (
-          <LinkWrapper id={item.id} key={index} index={index}/>
+          <LinkWrapper id={item.id} key={index} index={index} removeItem={removeItem}/>
         ))}
       </SortableContext>
     </DndContext>
@@ -134,6 +147,37 @@ const LinkFormWrapper = () => {
 };
 
 export default function LinkForm({ className }: { className?: string }) {
+  const [formItems, setFormItems] = useState([
+    { id: "1" },
+    { id: "2" },
+    { id: "3" },
+  ]);
+
+
+  const handleAddItem = () => {
+    setFormItems((prevItems) => {
+      const newItems = [...prevItems];
+      newItems.push({ id: `${newItems.length + 1}` });
+      return newItems;
+    });
+
+    notifySuccess("Link added successfully");
+  };
+
+  const handleRemoveItem = (id: string) => {
+    setFormItems((prevItems) => {
+      const newItems = [...prevItems];
+      const itemToRemove: { id: string } | undefined = newItems.find(
+        (item) => item.id === id
+      );
+      if (!itemToRemove) return newItems;
+      newItems.splice(newItems.indexOf(itemToRemove), 1);
+      return newItems;
+    });
+
+    notifySuccess("Link removed successfully");
+  };
+
   return (
     <div
       className={`flex flex-col gap-4 p-4 bg-white rounded-lg relative ${className}`}
@@ -147,12 +191,15 @@ export default function LinkForm({ className }: { className?: string }) {
       </p>
 
       {/* Add new Link Button - Outline */}
-      <button className="border border-violet-400 rounded-md p-2 text-violet-600 font-semibold hover:text-white hover:bg-violet-400 transition-all">
+      <button
+        onClick={handleAddItem}
+        className="border border-violet-400 rounded-md p-2 text-violet-600 font-semibold hover:text-white hover:bg-violet-400 transition-all"
+      >
         + Add new link
       </button>
 
       <div className="flex flex-col gap-4">
-        <LinkFormWrapper />
+        <LinkFormWrapper formItems={formItems} setFormItems={setFormItems} removeItem={handleRemoveItem}/>
       </div>
 
       <div className="py-4 border-t sticky bg-white w-full bottom-0 left-0 flex">
