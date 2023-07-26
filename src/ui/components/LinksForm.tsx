@@ -13,10 +13,11 @@ import {
   sortableKeyboardCoordinates,
   useSortable,
 } from "@dnd-kit/sortable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomSelect from "./CustomSelect";
 import LinkIcon from "@/assets/link-icon.png";
 import { notifySuccess, notifyError } from "@/services/notification";
+import { useGetLinks, useSaveLink } from "@/application/useLink";
 
 const LinkWrapper = ({
   id,
@@ -24,12 +25,14 @@ const LinkWrapper = ({
   removeItem,
   onPlatformChange,
   onUrlChange,
+  link,
 }: {
   id: string;
   index: number;
   removeItem: (id: string) => void;
   onPlatformChange: (value: string, id: string, isOther: boolean) => void;
   onUrlChange: (value: string, id: string) => void;
+  link?: { id: string; platform: string; url: string; isOther: boolean };
 }) => {
   const {
     attributes,
@@ -44,6 +47,16 @@ const LinkWrapper = ({
   const [otherPlatform, setOtherPlatform] = useState("");
   const [url, setUrl] = useState("");
 
+  useEffect(() => {
+    if (link) {
+      if (link.isOther) {
+        setIsOtherSelected(true);
+        setOtherPlatform(link.platform);
+      }
+      setUrl(link.url);
+    }
+  }, []);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -54,18 +67,18 @@ const LinkWrapper = ({
       setIsOtherSelected(true);
     } else {
       setIsOtherSelected(false);
-      onPlatformChange(e.value, id, false)
+      onPlatformChange(e.value, id, false);
     }
   };
 
   const handleOtherPlatformChange = (e: any) => {
     setOtherPlatform(e.target.value);
-    onPlatformChange(e.target.value, id, true)
+    onPlatformChange(e.target.value, id, true);
   };
 
   const handleUrlChange = (e: any) => {
     setUrl(e.target.value);
-    onUrlChange(e.target.value, id)
+    onUrlChange(e.target.value, id);
   };
 
   return (
@@ -81,7 +94,16 @@ const LinkWrapper = ({
       </div>
 
       <div className="input_wrapper mt-2">
-        <CustomSelect onChange={onChange} />
+        <CustomSelect
+          onChange={onChange}
+          value={
+            link?.isOther
+              ? { value: "Other", label: "Other" }
+              : link?.platform
+              ? { value: link.platform, label: link.platform }
+              : null
+          }
+        />
 
         {isOtherSelected && (
           <label
@@ -127,12 +149,14 @@ const LinkFormWrapper = ({
   removeItem,
   onPlatformChange,
   onUrlChange,
+  links,
 }: {
   formItems: { id: string }[];
   setFormItems: any;
   removeItem: (id: string) => void;
   onPlatformChange: (value: string, id: string, isOther: boolean) => void;
   onUrlChange: (value: string, id: string) => void;
+  links: { id: string; platform: string; url: string; isOther: boolean }[];
 }) => {
   // const [formItems, setFormItems] = useState(items);
 
@@ -174,6 +198,7 @@ const LinkFormWrapper = ({
             removeItem={removeItem}
             onPlatformChange={onPlatformChange}
             onUrlChange={onUrlChange}
+            link={links.find((link) => link.id === item.id)}
           />
         ))}
 
@@ -193,9 +218,27 @@ const LinkFormWrapper = ({
 };
 
 export default function LinkForm({ className }: { className?: string }) {
+  const { getLinksHandler } = useGetLinks();
+  const { saveLinkHandler } = useSaveLink();
+
   const [formItems, setFormItems] = useState<{ id: string }[]>([]);
 
-  const [links, setLinks] = useState<{ id: string; platform: string; url: string; isOther: boolean }[]>([]);
+  const [links, setLinks] = useState<
+    { id: string; platform: string; url: string; isOther: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    const getLinks = async () => {
+      const response = await getLinksHandler();
+      if (response) {
+        const links = response;
+        setLinks(links);
+        setFormItems(links.map((link) => ({ id: `${link.id}` })));
+      }
+    };
+
+    getLinks();
+  }, []);
 
   const handlePlatformChange = (
     value: string,
@@ -204,26 +247,26 @@ export default function LinkForm({ className }: { className?: string }) {
   ) => {
     setLinks((prevLinks) => {
       const newLinks = [...prevLinks];
-      const linkToChange: { id: string; platform: string; url: string; isOther: boolean } | undefined = newLinks.find(
-        (link) => link.id === id
-      );
+      const linkToChange:
+        | { id: string; platform: string; url: string; isOther: boolean }
+        | undefined = newLinks.find((link) => link.id === id);
       if (!linkToChange) return newLinks;
       linkToChange.platform = value;
       linkToChange.isOther = isOther;
       return newLinks;
-    })
+    });
   };
 
   const handleUrlChange = (value: string, id: string) => {
     setLinks((prevLinks) => {
       const newLinks = [...prevLinks];
-      const linkToChange: { id: string; platform: string; url: string; isOther: boolean } | undefined = newLinks.find(
-        (link) => link.id === id
-      );
+      const linkToChange:
+        | { id: string; platform: string; url: string; isOther: boolean }
+        | undefined = newLinks.find((link) => link.id === id);
       if (!linkToChange) return newLinks;
       linkToChange.url = value;
       return newLinks;
-    })
+    });
   };
 
   const handleAddItem = () => {
@@ -235,9 +278,14 @@ export default function LinkForm({ className }: { className?: string }) {
 
     setLinks((prevLinks) => {
       const newLinks = [...prevLinks];
-      newLinks.push({ id: `${newLinks.length + 1}`, platform: "", url: "", isOther: false });
+      newLinks.push({
+        id: `${newLinks.length + 1}`,
+        platform: "",
+        url: "",
+        isOther: false,
+      });
       return newLinks;
-    })
+    });
 
     notifySuccess("Link added successfully");
   };
@@ -255,34 +303,48 @@ export default function LinkForm({ className }: { className?: string }) {
 
     setLinks((prevLinks) => {
       const newLinks = [...prevLinks];
-      const linkToRemove: { id: string; platform: string; url: string; isOther: boolean } | undefined = newLinks.find(
-        (link) => link.id === id
-      );
+      const linkToRemove:
+        | { id: string; platform: string; url: string; isOther: boolean }
+        | undefined = newLinks.find((link) => link.id === id);
       if (!linkToRemove) return newLinks;
       newLinks.splice(newLinks.indexOf(linkToRemove), 1);
       return newLinks;
-    })
+    });
 
     notifySuccess("Link removed successfully");
   };
 
   const handleSubmit = () => {
-    console.log(links)
+    console.log(links);
 
-    if(links.length === 0) {
-      notifyError("Please add atleast one link")
-      return
+    if (links.length === 0) {
+      notifyError("Please add atleast one link");
+      return;
     }
-
-    links.forEach(link => {
+    let isEmpty = false
+    links.forEach((link) => {
       if (link.platform === "" || link.url === "") {
-        notifyError("Please fill all the fields")
-        return
+        notifyError("Please fill all the fields");
+        isEmpty = true
+        return;
       }
-    })
-
+    });
+    if (isEmpty) return;
     // TODO : call the api to save the links data
-  }
+    links.forEach(async (link) => {
+      const response = await saveLinkHandler(
+        link.id,
+        link.url,
+        link.platform,
+        link.isOther
+      );
+      if (response) {
+        notifySuccess("Links saved successfully");
+      } else {
+        notifyError("Something went wrong");
+      }
+    });
+  };
 
   return (
     <div
@@ -311,13 +373,15 @@ export default function LinkForm({ className }: { className?: string }) {
           removeItem={handleRemoveItem}
           onPlatformChange={handlePlatformChange}
           onUrlChange={handleUrlChange}
+          links={links}
         />
       </div>
 
       <div className="py-4 border-t sticky bg-white w-full bottom-0 left-0 flex">
         <button
-        onClick={handleSubmit}
-         className="w-full sm:w-fit ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold">
+          onClick={handleSubmit}
+          className="w-full sm:w-fit ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold"
+        >
           Submit
         </button>
       </div>
