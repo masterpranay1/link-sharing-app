@@ -1,15 +1,10 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-
 import RightArrow from "@/assets/right-arrow.png";
-import { useGlobal } from "@/services/context";
 import LinkedinIcon from "@/assets/linkedin-icon.png";
 import TwitterIcon from "@/assets/twitter-icon.png";
 import GithubIcon from "@/assets/github-icon.png";
 
 import LinkIcon from "@/assets/link.png";
 
-import { useGetUserInfo } from "@/application/useUserInfo";
-import { useGetLinks } from "@/application/useLink";
 import { useEffect, useState } from "react";
 
 import { useUserPreviewService } from "@/services/userPreviewAdapter";
@@ -52,9 +47,6 @@ const Button = ({
 };
 
 export default function UserPreview() {
-  // const { navState, dispatchNavLink, userState } = useGlobal();
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const { getUserPreview } = useUserPreviewService()
@@ -115,23 +107,6 @@ export default function UserPreview() {
       })
     );
   }, [links]);
-
-  // const handleClick = () => {
-  //   dispatchNavLink(navState.previousId);
-  // };
-
-  // useEffect(() => {
-  //   if (pathname.slice(1) !== navState.id) {
-  //     dispatchNavLink("preview");
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (userState.id === null) {
-  //     dispatchNavLink("login");
-  //     navigate("/login");
-  //   }
-  // }, [userState]);
 
   return (
     <>
