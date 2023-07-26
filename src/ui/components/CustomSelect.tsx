@@ -10,7 +10,7 @@ const Control = ({ children, ...props }: ControlProps<any, false>) => {
   return (
     <components.Control {...props}>
       <span style={style}>
-        <img src={PlatformIcon} alt="link-icon" className="w-6 h-6"/>
+        <img src={PlatformIcon} alt="link-icon" className="w-6 h-6" />
       </span>
       {children}
     </components.Control>
@@ -35,6 +35,10 @@ const CustomSelect = (props: Props<any>) => {
       value: "Linkedin",
       label: "Linkedin",
     },
+    {
+      value: "Other",
+      label: "Other",
+    }
   ];
 
   return (
@@ -56,16 +60,17 @@ const CustomSelect = (props: Props<any>) => {
           },
           control: ({}) => clsx("border rounded-lg bg-white px-4 py-2"),
           menu: () => clsx("border rounded-lg mt-1"),
-          dropdownIndicator: () => clsx(
-            'text-violet-500'
-          )
+          dropdownIndicator: () => clsx("text-violet-500"),
+          noOptionsMessage: () =>
+            clsx("px-4 py-4 text-slate-600 text-center bg-white rounded-lg"),
         }}
         options={options}
         isMulti={false}
-        isSearchable={false}
+        isSearchable={true}
         name="platform"
         // @ts-ignore
         iconUrl={null}
+        noOptionsMessage={() => "Searched option not available!!"}
       />
     </>
   );

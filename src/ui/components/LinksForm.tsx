@@ -27,9 +27,17 @@ const LinkWrapper = ({ id }: { id: string }) => {
     setActivatorNodeRef,
   } = useSortable({ id, transition: null });
 
+  const [isOtherSelected, setIsOtherSelected] = useState(false);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+  };
+
+  const onChange = (e: any) => {
+    if (e.value === "Other") {
+      setIsOtherSelected(true);
+    }
   };
 
   return (
@@ -43,7 +51,21 @@ const LinkWrapper = ({ id }: { id: string }) => {
       </div>
 
       <div className="input_wrapper mt-2">
-        <CustomSelect />
+        <CustomSelect onChange={onChange} />
+
+        {isOtherSelected && (
+          <label
+            htmlFor="other-platform-text"
+            className="px-4 py-2 bg-white rounded-lg mt-2 block border"
+          >
+            <input
+              type="text"
+              name="other-platform-text"
+              className="w-full focus:outline-none"
+              placeholder="Enter the platform name"
+            />
+          </label>
+        )}
 
         <label
           htmlFor="link"
@@ -52,7 +74,7 @@ const LinkWrapper = ({ id }: { id: string }) => {
           Link
         </label>
         <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-lg border">
-          <img src={LinkIcon} alt="link-icon" className="w-6 h-6"/>
+          <img src={LinkIcon} alt="link-icon" className="w-6 h-6" />
           <input
             type="text"
             className="w-full focus:outline-none"
