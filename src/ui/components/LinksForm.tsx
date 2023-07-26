@@ -17,7 +17,7 @@ import { useState } from "react";
 import CustomSelect from "./CustomSelect";
 import LinkIcon from "@/assets/link-icon.png";
 
-const LinkWrapper = ({ id }: { id: string }) => {
+const LinkWrapper = ({ id, index }: { id: string; index: number }) => {
   const {
     attributes,
     listeners,
@@ -37,6 +37,8 @@ const LinkWrapper = ({ id }: { id: string }) => {
   const onChange = (e: any) => {
     if (e.value === "Other") {
       setIsOtherSelected(true);
+    } else {
+      setIsOtherSelected(false);
     }
   };
 
@@ -46,7 +48,7 @@ const LinkWrapper = ({ id }: { id: string }) => {
         <span ref={setActivatorNodeRef} {...attributes} {...listeners}>
           =
         </span>
-        <span className="font-bold">Link #{id}</span>
+        <span className="font-bold">Link #{index + 1}</span>
         <span className="ml-auto">Remove</span>
       </div>
 
@@ -124,7 +126,7 @@ const LinkFormWrapper = () => {
     >
       <SortableContext items={formItems.map((item) => item.id)}>
         {formItems.map((item, index) => (
-          <LinkWrapper id={item.id} key={index} />
+          <LinkWrapper id={item.id} key={index} index={index}/>
         ))}
       </SortableContext>
     </DndContext>
