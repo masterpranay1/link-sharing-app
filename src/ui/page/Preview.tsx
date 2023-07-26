@@ -14,6 +14,7 @@ import LinkIcon from "@/assets/link.png";
 import { useGetUserInfo } from "@/application/useUserInfo";
 import { useGetLinks } from "@/application/useLink";
 import { useEffect, useState } from "react";
+import { notifySuccess } from "@/services/notification";
 
 interface IButtonProps {
   text: string;
@@ -155,7 +156,12 @@ export default function Preview() {
                 Back
               </Link>
             </button>
-            <button className="bg-blue-600 text-white hover:opacity-60 px-4 py-2 w-24 md:w-32 rounded-lg text-sm">
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(`https://link-sharing-app.vercel.app/${userState.id}`)
+                notifySuccess('Link copied to clipboard!!')
+              }}
+             className="bg-blue-600 text-white hover:opacity-60 px-4 py-2 w-24 md:w-32 rounded-lg text-sm">
               Share Link
             </button>
           </header>
