@@ -19,3 +19,7 @@ export interface IGetUserInfo {
 export interface ISaveUserInfo {
   saveUserInfo : (userInfo : UserInfo) => Promise<boolean>
 }
+
+export interface ISaveProfilePicture {
+  saveProfilePicture : (picture : File) => Promise<string> | null
+}

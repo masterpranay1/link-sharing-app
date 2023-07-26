@@ -10,4 +10,5 @@ export interface UserInfo {
   profileImage?: string;
   links?: string[];
   email?: string;
+  profilepicture? : string;
 }
