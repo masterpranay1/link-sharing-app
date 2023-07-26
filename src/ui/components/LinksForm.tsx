@@ -217,7 +217,7 @@ const LinkFormWrapper = ({
   );
 };
 
-export default function LinkForm({ className }: { className?: string }) {
+export default function LinkForm({ className, setReRenderMockup }: { className?: string; setReRenderMockup: any }) {
   const { getLinksHandler } = useGetLinks();
   const { saveLinkHandler } = useSaveLink();
   const { deleteLinkHandler } = useDeleteLink();
@@ -315,6 +315,8 @@ export default function LinkForm({ className }: { className?: string }) {
 
     await deleteLinkHandler(id);
 
+    setReRenderMockup(true);
+
     notifySuccess("Link removed successfully");
   };
 
@@ -333,7 +335,6 @@ export default function LinkForm({ className }: { className?: string }) {
       }
     });
     if (isEmpty) return;
-    // TODO : call the api to save the links data
     links.forEach(async (link) => {
       const response = await saveLinkHandler(
         link.id,
@@ -342,6 +343,7 @@ export default function LinkForm({ className }: { className?: string }) {
         link.isOther
       );
       if (response) {
+        setReRenderMockup(true);
         notifySuccess("Links saved successfully");
       } else {
         notifyError("Something went wrong");

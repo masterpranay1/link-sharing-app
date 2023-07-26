@@ -9,7 +9,7 @@ import {
 } from "@/application/useUserInfo";
 import { useLogoutUser } from "@/application/useUserAuth";
 
-export default function Profile({ className }: { className?: string }) {
+export default function Profile({ className, setReRenderMockup }: { className?: string; setReRenderMockup?: any }) {
   const { dispatchUser, userState } = useGlobal();
   const navigate = useNavigate();
   const getUserInfo = useGetUserInfo();
@@ -63,10 +63,17 @@ export default function Profile({ className }: { className?: string }) {
       lastname: userInfo.lastname,
     });
 
+    if (res) {
+      notifySuccess("Profile Data updated successfully");
+      setReRenderMockup(true);
+    } else {
+      notifyError("Something went wrong");
+    }
+
     if (isProfileImageChanges) {
       // upload image
+      notifySuccess("Uploading Profile Picture");
       const res = await saveProfilePicture(imageLocalPath as File);
-      console.log(res);
       if (res) {
         setUserInfo((prev) => {
           return {
@@ -74,15 +81,11 @@ export default function Profile({ className }: { className?: string }) {
             profilepicture: res as string,
           };
         });
+        setReRenderMockup(true);
+        notifySuccess("Profile Picture Updated Successfully");
       } else {
-        return notifyError("Something went wrong");
+        return notifyError("Profile Picture Uploading Failed!!");
       }
-    }
-
-    if (res) {
-      notifySuccess("Profile updated successfully");
-    } else {
-      notifyError("Something went wrong");
     }
   };
 

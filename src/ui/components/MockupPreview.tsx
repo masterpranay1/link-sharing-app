@@ -46,7 +46,7 @@ const Button = ({
   );
 };
 
-export default function MockupPreview({ className }: { className?: string }) {
+export default function MockupPreview({ className, reRenderMockup }: { className?: string; reRenderMockup?: boolean }) {
   const [userInfo, setUserInfo] = useState({
     firstname: "",
     lastname: "",
@@ -76,14 +76,14 @@ export default function MockupPreview({ className }: { className?: string }) {
         profilepicture: data.profileImage as string,
       });
     });
-  }, []);
+  }, [reRenderMockup]);
 
   useEffect(() => {
     getLinksHandler().then((data) => {
       if (!data) return;
       setLinks(data)
     })
-  }, [])
+  }, [reRenderMockup])
 
   useEffect(() => {
     setImageUrls(links.map((link) => {
@@ -101,7 +101,7 @@ export default function MockupPreview({ className }: { className?: string }) {
 
       return "bg-slate-600";
     }))
-  }, [links])
+  }, [links, reRenderMockup])
 
   return (
     <div className={`${className} bg-white rounded-lg p-4 lg:p-12 lg:px-16`}>

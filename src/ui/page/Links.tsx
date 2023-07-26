@@ -1,15 +1,16 @@
 import { Header, LinkForm, MockupPreview } from "@/components";
 import { useGlobal } from "@/services/context";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const LinksView = () => {
+  const [reRenderMockup, setReRenderMockup] = useState(false);
   return (
     <div className="flex flex-row gap-4 mt-4 p-4 sm:p-0">
       <div className="hidden md:flex md:w-1/3 relative">
-        <MockupPreview className="w-full h-[calc(100vh-2rem)] sticky top-4" />
+        <MockupPreview className="w-full h-[calc(100vh-2rem)] sticky top-4" reRenderMockup={reRenderMockup}/>
       </div>
-      <LinkForm className="w-full md:w-2/3" />
+      <LinkForm className="w-full md:w-2/3" setReRenderMockup={setReRenderMockup}/>
     </div>
   );
 };
