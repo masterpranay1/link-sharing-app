@@ -138,9 +138,20 @@ const LinkFormWrapper = ({
       }}
     >
       <SortableContext items={formItems.map((item) => item.id)}>
-        {formItems.map((item, index) => (
+        {formItems?.map((item, index) => (
           <LinkWrapper id={item.id} key={index} index={index} removeItem={removeItem}/>
         ))}
+
+        {
+          formItems.length === 0 && (
+            <div className="bg-slate-100 p-4 rounded">
+              <div className="flex gap-2 items-center justify-center text-slate-600 w-full">
+                <span className="font-bold text-center block">No links added yet</span>
+                <span className="text-2xl block">🥲🥹</span>
+              </div>
+            </div>
+          )
+        }
       </SortableContext>
     </DndContext>
   );
