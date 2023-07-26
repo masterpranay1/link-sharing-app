@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import RightArrow from "@/assets/right-arrow.png";
-import DPImage from "@/assets/dp.jpeg";
 import { NAVLINKSDATA } from "@/datasource/navlinks";
 import { useGlobal } from "@/services/context";
 import LinkedinIcon from "@/assets/linkedin-icon.png";

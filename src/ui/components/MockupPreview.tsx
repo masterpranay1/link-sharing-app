@@ -1,5 +1,4 @@
 import RightArrow from "@/assets/right-arrow.png";
-import DPImage from "@/assets/dp.jpeg";
 import LinkedinIcon from "@/assets/linkedin-icon.png";
 import TwitterIcon from "@/assets/twitter-icon.png";
 import GithubIcon from "@/assets/github-icon.png";
