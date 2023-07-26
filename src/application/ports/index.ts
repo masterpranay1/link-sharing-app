@@ -1,4 +1,5 @@
 import { UserInfo } from '@/domain/user'
+import { ILink } from '@/domain/link'
 
 export interface ICreateUser {
   createUser : (email : string, password: string) => Promise<string | null>
@@ -22,4 +23,12 @@ export interface ISaveUserInfo {
 
 export interface ISaveProfilePicture {
   saveProfilePicture : (picture : File) => Promise<string> | null
+}
+
+export interface ISaveLink {
+  saveLink : (id: string, url : string, platform : string, isOther: boolean) => Promise<string | null>
+}
+
+export interface IGetLinks {
+  getLinks : () => Promise<ILink[] | null>
 }
