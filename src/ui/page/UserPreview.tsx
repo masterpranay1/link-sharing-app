@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import RightArrow from "@/assets/right-arrow.png";
 import { useGlobal } from "@/services/context";
@@ -11,6 +11,8 @@ import LinkIcon from "@/assets/link.png";
 import { useGetUserInfo } from "@/application/useUserInfo";
 import { useGetLinks } from "@/application/useLink";
 import { useEffect, useState } from "react";
+
+import { useUserPreviewService } from "@/services/userPreviewAdapter";
 
 interface IButtonProps {
   text: string;
@@ -53,11 +55,13 @@ export default function UserPreview() {
   // const { navState, dispatchNavLink, userState } = useGlobal();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  const { getUserPreview } = useUserPreviewService()
 
   const [userInfo, setUserInfo] = useState({
     firstname: "Pranay",
     lastname: "Raj",
-    email: "masterpranay@gmail.com",
     profilepicture: "https://via.placeholder.com/250",
   });
 
@@ -72,27 +76,23 @@ export default function UserPreview() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [bgColors, setBgColors] = useState<string[]>([]);
 
-  const getUserInfo = useGetUserInfo();
-  const { getLinksHandler } = useGetLinks();
+  useEffect(() => {
+    const getData = async () => {
+      const res = await getUserPreview(id as string)
+      if(!res) return;
+      setUserInfo((prev) => {
+        return {
+          firstname: res.firstName,
+          lastname: res.lastName,
+          profilepicture: res.profileImage
+        }
+      })
 
-  // useEffect(() => {
-  //   getUserInfo().then((data) => {
-  //     if (!data) return;
-  //     setUserInfo({
-  //       firstname: data.firstname as string,
-  //       lastname: data.lastname as string,
-  //       email: data.email as string,
-  //       profilepicture: data.profileImage as string,
-  //     });
-  //   });
-  // }, []);
+      setLinks(res.links)
+    }
 
-  // useEffect(() => {
-  //   getLinksHandler().then((data) => {
-  //     if (!data) return;
-  //     setLinks(data);
-  //   });
-  // }, []);
+    getData()
+  }, [])
 
   useEffect(() => {
     setImageUrls(
@@ -151,9 +151,9 @@ export default function UserPreview() {
                 {userInfo.firstname} {userInfo.lastname}
               </h2>
             )}
-            <p className="text-md text-center break-all mx-2 text-slate-600">
+            {/* <p className="text-md text-center break-all mx-2 text-slate-600">
               {userInfo.email}
-            </p>
+            </p> */}
 
             <div className="button-wrapper mx-auto w-full flex flex-col gap-4 px-4 py-4 mt-8">
               {links.map((link) => (
