@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useGlobal } from "../../services/context";
 import { useNavigate } from "react-router-dom";
 import { notifySuccess, notifyError } from "../../services/notification";
-import { useGetUserInfo, useSaveUserInfo } from "@/application/useUserInfo";
+import {
+  useGetUserInfo,
+  useSaveUserInfo,
+  useSaveProfilePicture,
+} from "@/application/useUserInfo";
 import { useLogoutUser } from "@/application/useUserAuth";
 
 export default function Profile({ className }: { className?: string }) {
@@ -10,12 +14,16 @@ export default function Profile({ className }: { className?: string }) {
   const navigate = useNavigate();
   const getUserInfo = useGetUserInfo();
   const saveUserInfo = useSaveUserInfo();
+  const saveProfilePicture = useSaveProfilePicture();
   const [userInfo, setUserInfo] = useState({
     firstname: "",
     lastname: "",
     email: "",
+    profilepicture: "https://via.placeholder.com/250",
   });
   const [loading, setLoading] = useState(false);
+  const [isProfileImageChanges, setIsProfileImageChanges] = useState(false);
+  const [imageLocalPath, setImageLocalPath] = useState<File>();
 
   const logoutUser = useLogoutUser();
 
@@ -30,6 +38,7 @@ export default function Profile({ className }: { className?: string }) {
             firstname: res.firstname as string,
             lastname: res.lastname as string,
             email: res.email as string,
+            profilepicture: (res.profileImage as string) || prev.profilepicture,
           };
         });
       }
@@ -44,7 +53,7 @@ export default function Profile({ className }: { className?: string }) {
       ...prev,
       [name]: value,
     }));
-  }
+  };
 
   const handleSave = async (e: any) => {
     e.preventDefault();
@@ -54,17 +63,39 @@ export default function Profile({ className }: { className?: string }) {
       lastname: userInfo.lastname,
     });
 
+    if (isProfileImageChanges) {
+      // upload image
+      const res = await saveProfilePicture(imageLocalPath as File);
+      console.log(res);
+      if (res) {
+        setUserInfo((prev) => {
+          return {
+            ...prev,
+            profilepicture: res as string,
+          };
+        });
+      } else {
+        return notifyError("Something went wrong");
+      }
+    }
+
     if (res) {
       notifySuccess("Profile updated successfully");
     } else {
       notifyError("Something went wrong");
     }
-  }
+  };
 
   const handleClick = async () => {
     await logoutUser();
     dispatchUser(null);
     navigate("/login");
+  };
+
+  const handleProfileImageChange = (e: any) => {
+    setIsProfileImageChanges(true);
+    setImageLocalPath(e.target.files[0]);
+    console.log(typeof e.target.files[0]);
   };
 
   return (
@@ -77,15 +108,19 @@ export default function Profile({ className }: { className?: string }) {
       <div className="form_wrapper my-8">
         <div className="flex flex-col md:flex-row gap-4 items-center bg-slate-100 p-4 md:px-8 rounded-lg">
           <span className="text-slate-600 md:w-2/4">Profile Picture</span>
-          <label htmlFor="profile-picture" className="cursor-pointer">
+          <label htmlFor="profilepicture" className="cursor-pointer">
             <input
               type="file"
-              name="profile-picture"
-              id="profile-picture"
+              name="profilepicture"
+              id="profilepicture"
               className="hidden"
+              onChange={handleProfileImageChange}
             />
             <div
-              className={`bg-[url("https://via.placeholder.com/250")] hover: w-32 h-32 object-cover bg-cover rounded-lg`}
+              className={`hover: w-32 h-32 object-cover bg-cover rounded-lg`}
+              style={{
+                backgroundImage: `url(${userInfo.profilepicture})`,
+              }}
             >
               <div className="opacity-0 hover:opacity-60 transition-all text-white flex rounded-lg justify-center items-center w-full h-full backdrop-brightness-50">
                 Change Image
@@ -162,7 +197,10 @@ export default function Profile({ className }: { className?: string }) {
         >
           Log out
         </span>
-        <button onClick={(e) => handleSave(e)} className="w-full sm:w-fit bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold">
+        <button
+          onClick={(e) => handleSave(e)}
+          className="w-full sm:w-fit bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold"
+        >
           Save
         </button>
       </div>
