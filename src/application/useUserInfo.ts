@@ -1,5 +1,5 @@
-import { IGetUserInfo } from "./ports";
-import { useGetUserInfoService, useSaveUserInfoService } from "@/services/userInfoAdapter";
+import { IGetUserInfo, ISaveProfilePicture } from "./ports";
+import { useGetUserInfoService, useSaveUserInfoService, useSaveProfilePictureService } from "@/services/userInfoAdapter";
 import { UserInfo } from "@/domain/user";
 
 export function useGetUserInfo(){
@@ -20,4 +20,14 @@ export function useSaveUserInfo() {
   }
 
   return saveUserInfo
+}
+
+export function useSaveProfilePicture() {
+  const saveProfilePictureService : ISaveProfilePicture = useSaveProfilePictureService()
+
+  async function saveProfilePicture(picture: File) {
+    return saveProfilePictureService.saveProfilePicture(picture)
+  }
+
+  return saveProfilePicture
 }

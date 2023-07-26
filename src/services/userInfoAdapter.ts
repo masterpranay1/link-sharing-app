@@ -1,5 +1,5 @@
-import { IGetUserInfo, ISaveUserInfo } from "@/application/ports";
-import { databases, query, account } from "@/lib/appwrite";
+import { IGetUserInfo, ISaveUserInfo, ISaveProfilePicture } from "@/application/ports";
+import { databases, query, account, storage } from "@/lib/appwrite";
 import { useGlobal } from "./context";
 import { notifyError } from "./notification";
 import { v4 as uuidv4 } from "uuid";
@@ -12,9 +12,7 @@ export const useGetUserInfoService = (): IGetUserInfo => {
       const res = await databases.listDocuments(
         "64bf9d8d4b1287ddf27c",
         "64bf9d97eb4f5afce89e",
-        [
-          query.equal("userid", userState.id),
-        ]
+        [query.equal("userid", userState.id)]
       );
 
       const accountRes = await account.get();
@@ -47,7 +45,7 @@ export const useGetUserInfoService = (): IGetUserInfo => {
   return { getUserInfo };
 };
 
-export const useSaveUserInfoService = () : ISaveUserInfo => {
+export const useSaveUserInfoService = (): ISaveUserInfo => {
   const { userState } = useGlobal();
 
   const saveUserInfo = async (userInfo: any) => {
@@ -55,11 +53,8 @@ export const useSaveUserInfoService = () : ISaveUserInfo => {
       const res = await databases.listDocuments(
         "64bf9d8d4b1287ddf27c",
         "64bf9d97eb4f5afce89e",
-        [
-          query.equal("userid", userState.id),
-        ]
+        [query.equal("userid", userState.id)]
       );
-
       if (res.documents.length > 0) {
         await databases.updateDocument(
           "64bf9d8d4b1287ddf27c",
@@ -91,4 +86,49 @@ export const useSaveUserInfoService = () : ISaveUserInfo => {
   };
 
   return { saveUserInfo };
-}
+};
+
+export const useSaveProfilePictureService = () : ISaveProfilePicture => {
+  const { userState } = useGlobal();
+
+  const saveProfilePicture = async (file: any) => {
+    try {
+      const res = await databases.listDocuments(
+        "64bf9d8d4b1287ddf27c",
+        "64bf9d97eb4f5afce89e",
+        [query.equal("userid", userState.id)]
+      );
+      if (res.documents[0].profileImageId) {
+        await storage.deleteFile(
+          "64b91adf49de69863ebd",
+          res.documents[0].profileImageId
+        );
+      }
+
+      const res2 = await storage.createFile(
+        "64b91adf49de69863ebd",
+        uuidv4(),
+        file
+      );
+
+      const res3 = await storage.getFileView("64b91adf49de69863ebd", res2.$id);
+
+      await databases.updateDocument(
+        "64bf9d8d4b1287ddf27c",
+        "64bf9d97eb4f5afce89e",
+        res.documents[0].$id,
+        {
+          profileImage: res3.href,
+          profileImageId: res2.$id,
+        }
+      );
+
+      return res3.href;
+    } catch (error: any) {
+      notifyError(error.message);
+      return null;
+    }
+  };
+
+  return { saveProfilePicture };
+};
