@@ -1,13 +1,9 @@
-import { Header } from "@/components";
+import { useState, useEffect } from "react";
+import { Header,Loader } from "@/components";
 import { useGlobal } from "@/services/context";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import {
-  useCreateUser,
-  useEmailLoginUser,
-} from "@/application/useUserAuth";
+import { useCreateUser, useEmailLoginUser } from "@/application/useUserAuth";
 import { User } from "@/domain/user";
-import { useState, useEffect } from "react";
 
 function Login() {
   const { dispatchNavLink, dispatchUser } = useGlobal();
@@ -17,6 +13,7 @@ function Login() {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const emailLoginUser = useEmailLoginUser();
 
@@ -30,12 +27,20 @@ function Login() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const userId = await emailLoginUser(formData);
+    setLoading(true);
 
-    if (userId) {
-      dispatchNavLink("links");
-      dispatchUser(userId);
-      navigate("/links");
+    try {
+      const userId = await emailLoginUser(formData);
+
+      if (userId) {
+        dispatchNavLink("links");
+        dispatchUser(userId);
+        navigate("/links");
+      }
+    } catch (error) {
+      // alert(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,10 +55,7 @@ function Login() {
 
       <div className="w-8 h-1 rounded-full bg-slate-200"></div>
 
-      <form
-        className="flex flex-col gap-2 mt-8 w-full max-w-2xl"
-        onSubmit={handleSubmit}
-      >
+      <form className="flex flex-col gap-2 mt-8 w-full max-w-2xl" onSubmit={handleSubmit}>
         <label htmlFor="email" className="text-slate-500">
           Email
         </label>
@@ -78,15 +80,12 @@ function Login() {
           className="border rounded-lg px-4 py-2 w-full"
         />
 
-        <button className="w-full border rounded-lg px-4 py-2 mt-4 bg-slate-200  hover:bg-white">
-          Login
+        <button className="w-full border rounded-lg px-4 py-2 mt-4 bg-slate-200 hover:bg-white flex items-center justify-center" disabled={loading}>
+          {loading ? <Loader /> : "Login"}
         </button>
       </form>
 
-      <button
-        onClick={handleClick}
-        className="text-slate-600 hover:underline mt-4"
-      >
+      <button onClick={handleClick} className="text-slate-600 hover:underline mt-4">
         Register
       </button>
     </div>
@@ -101,6 +100,7 @@ function Register() {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const createUser = useCreateUser();
 
@@ -114,12 +114,20 @@ function Register() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const userId = await createUser(formData);
+    setLoading(true);
 
-    if (userId) {
-      dispatchNavLink("links");
-      dispatchUser(userId);
-      navigate("/links");
+    try {
+      const userId = await createUser(formData);
+
+      if (userId) {
+        dispatchNavLink("links");
+        dispatchUser(userId);
+        navigate("/links");
+      }
+    } catch (error) {
+      alert(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,10 +142,7 @@ function Register() {
 
       <div className="w-8 h-1 rounded-full bg-slate-200"></div>
 
-      <form
-        className="flex flex-col gap-2 mt-8 w-full max-w-2xl"
-        onSubmit={handleSubmit}
-      >
+      <form className="flex flex-col gap-2 mt-8 w-full max-w-2xl" onSubmit={handleSubmit}>
         <label htmlFor="email" className="text-slate-500">
           Email
         </label>
@@ -164,16 +169,14 @@ function Register() {
 
         <button
           type="submit"
-          className="w-full border rounded-lg px-4 py-2 mt-4 bg-slate-200  hover:bg-white"
+          className="w-full border rounded-lg px-4 py-2 mt-4 bg-slate-200 hover:bg-white flex items-center justify-center"
+          disabled={loading}
         >
-          Register
+          {loading ? <Loader /> : "Register"}
         </button>
       </form>
 
-      <button
-        onClick={handleClick}
-        className="text-slate-600 hover:underline mt-4"
-      >
+      <button onClick={handleClick} className="text-slate-600 hover:underline mt-4">
         Login
       </button>
     </div>
