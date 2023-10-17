@@ -1,27 +1,38 @@
-import { useEffect, useState } from "react";
-import { useGlobal } from "@/services/context";
-import { useNavigate } from "react-router-dom";
-import { notifySuccess, notifyError } from "@/services/notification";
+import { useLogoutUser } from "@/application/useUserAuth";
 import {
   useGetUserInfo,
-  useSaveUserInfo,
   useSaveProfilePicture,
+  useSaveUserInfo,
 } from "@/application/useUserInfo";
-import { useLogoutUser } from "@/application/useUserAuth";
+import { useGlobal } from "@/services/context";
+import { notifyError, notifySuccess } from "@/services/notification";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Loader } from ".";
+import ProfileImage from "./ProfileImage";
 
-export default function Profile({ className, setReRenderMockup }: { className?: string; setReRenderMockup?: any }) {
+export default function Profile({
+  className,
+  setReRenderMockup,
+}: {
+  className?: string;
+  setReRenderMockup?: any;
+}) {
   const { dispatchUser, userState } = useGlobal();
   const navigate = useNavigate();
   const getUserInfo = useGetUserInfo();
   const saveUserInfo = useSaveUserInfo();
   const saveProfilePicture = useSaveProfilePicture();
+  const [loading, setLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({
     firstname: "",
     lastname: "",
     email: "",
-    profilepicture: "https://via.placeholder.com/250",
+    profilepicture: "",
   });
-  const [loading, setLoading] = useState(false);
   const [isProfileImageChanges, setIsProfileImageChanges] = useState(false);
   const [imageLocalPath, setImageLocalPath] = useState<File>();
 
@@ -57,6 +68,7 @@ export default function Profile({ className, setReRenderMockup }: { className?: 
 
   const handleSave = async (e: any) => {
     e.preventDefault();
+    setSaveLoading(true);
     const res = await saveUserInfo({
       userid: userState.id,
       firstname: userInfo.firstname,
@@ -87,18 +99,22 @@ export default function Profile({ className, setReRenderMockup }: { className?: 
         return notifyError("Profile Picture Uploading Failed!!");
       }
     }
+    setSaveLoading(false);
   };
 
   const handleClick = async () => {
+    setLogoutLoading(true);
     await logoutUser();
     dispatchUser(null);
     navigate("/login");
+    setLogoutLoading(false);
   };
 
   const handleProfileImageChange = (e: any) => {
     setIsProfileImageChanges(true);
     setImageLocalPath(e.target.files[0]);
     console.log(typeof e.target.files[0]);
+    setImageLoading(true);
   };
 
   return (
@@ -120,12 +136,10 @@ export default function Profile({ className, setReRenderMockup }: { className?: 
               onChange={handleProfileImageChange}
             />
             <div
-              className={`hover: w-32 h-32 object-cover bg-cover rounded-lg`}
-              style={{
-                backgroundImage: `url(${userInfo.profilepicture})`,
-              }}
+              className={`w-28 h-28 object-cover flex items-center justify-center bg-cover rounded-lg relative overflow-hidden`}
             >
-              <div className="opacity-0 hover:opacity-60 transition-all text-white flex rounded-lg justify-center items-center w-full h-full backdrop-brightness-50">
+              <ProfileImage userInfo={userInfo} classname="hover: w-32 h-32 object-cover bg-cover rounded-lg flex items-center justify-center"/>
+              <div className="opacity-0 absolute top-0 hover:opacity-60 transition-all text-white flex rounded-lg justify-center items-center w-full h-full backdrop-brightness-50 object-cover">
                 Change Image
               </div>
             </div>
@@ -198,13 +212,16 @@ export default function Profile({ className, setReRenderMockup }: { className?: 
           onClick={() => handleClick()}
           className="ml-auto inline-block cursor-pointer text-slate-500 hover:text-slate-400"
         >
-          Log out
+          {logoutLoading ? <Loader /> : "Log out"}
         </span>
         <button
           onClick={(e) => handleSave(e)}
-          className="w-full sm:w-fit bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold"
+          className={`w-full sm:w-fit bg-blue-600 text-white ${
+            loading ? "bg-slate-300 cursor-not-allowed m-auto" : "bg-blue-600"
+          }text-white px-4 py-2 rounded-lg text-lg font-semibold`}
+          disabled={loading}
         >
-          Save
+          {saveLoading ? <Loader /> : "Save"}
         </button>
       </div>
     </section>

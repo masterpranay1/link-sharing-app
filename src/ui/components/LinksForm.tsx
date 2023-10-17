@@ -223,10 +223,10 @@ export default function LinkForm({ className, setReRenderMockup }: { className?:
   const { deleteLinkHandler } = useDeleteLink();
 
   const [formItems, setFormItems] = useState<{ id: string }[]>([]);
-
   const [links, setLinks] = useState<
     { id: string; platform: string; url: string; isOther: boolean }[]
   >([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getLinks = async () => {
@@ -292,7 +292,7 @@ export default function LinkForm({ className, setReRenderMockup }: { className?:
   };
 
   const handleRemoveItem = async (id: string) => {
-    notifySuccess("Link Removing in progress!!")
+    notifySuccess("Link Removing in progress!!");
     setFormItems((prevItems) => {
       const newItems = [...prevItems];
       const itemToRemove: { id: string } | undefined = newItems.find(
@@ -320,35 +320,45 @@ export default function LinkForm({ className, setReRenderMockup }: { className?:
     notifySuccess("Link removed successfully");
   };
 
-  const handleSubmit = () => {
-    
+  const handleSubmit = async () => {
     if (links.length === 0) {
-      notifyError("Please add atleast one link");
+      notifyError("Please add at least one link");
       return;
     }
-    let isEmpty = false
+
+    let isEmpty = false;
     links.forEach((link) => {
       if (link.platform === "" || link.url === "") {
         notifyError("Please fill all the fields");
-        isEmpty = true
+        isEmpty = true;
         return;
       }
     });
+
     if (isEmpty) return;
-    links.forEach(async (link) => {
-      const response = await saveLinkHandler(
-        link.id,
-        link.url,
-        link.platform,
-        link.isOther
-      );
-      if (response) {
-        setReRenderMockup(true);
-        notifySuccess("Links saved successfully");
-      } else {
-        notifyError("Something went wrong");
-      }
-    });
+
+    try {
+      setIsLoading(true);
+
+      links.forEach(async (link) => {
+        const response = await saveLinkHandler(
+          link.id,
+          link.url,
+          link.platform,
+          link.isOther
+        );
+        if (response) {
+          setReRenderMockup(true);
+          notifySuccess("Links saved successfully");
+        } else {
+          notifyError("Something went wrong");
+        }
+      });
+    } catch (error) {
+      notifyError("Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -385,9 +395,12 @@ export default function LinkForm({ className, setReRenderMockup }: { className?:
       <div className="py-4 border-t sticky bg-white w-full bottom-0 left-0 flex">
         <button
           onClick={handleSubmit}
-          className="w-full sm:w-fit ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold"
+          disabled={isLoading}
+          className={`w-full sm:w-fit ml-auto ${
+            isLoading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-600"
+          } text-white px-4 py-2 rounded-lg text-lg font-semibold`}
         >
-          Submit
+          {isLoading ? "Submitting..." : "Submit"}
         </button>
       </div>
     </div>

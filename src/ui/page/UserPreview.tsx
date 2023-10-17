@@ -10,6 +10,7 @@ import LinkIcon from "@/assets/link.png";
 import { useEffect, useState } from "react";
 
 import { useUserPreviewService } from "@/services/userPreviewAdapter";
+import ProfileImage from "../components/ProfileImage";
 
 interface IButtonProps {
   text: string;
@@ -54,9 +55,9 @@ export default function UserPreview() {
   const { getUserPreview } = useUserPreviewService()
 
   const [userInfo, setUserInfo] = useState({
-    firstname: "Pranay",
+    firstname: "Pranaydd",
     lastname: "Raj",
-    profilepicture: "https://via.placeholder.com/250",
+    profilepicture: "",
   });
 
   const [links, setLinks] = useState<
@@ -113,22 +114,12 @@ export default function UserPreview() {
       <div className="w-full h-fit min-h-screen bg-slate-100">
         <div className="w-full p-4">
           <div className="w-full md:w-96 mx-auto my-4 bg-white shadow-lg px-4 py-8 rounded-lg m-4">
-            <figure>
-              <img
-                src={userInfo.profilepicture}
-                alt="profile"
-                className="w-24 h-24 lg:w-32 lg:h-32 mx-auto rounded-full border-2 border-slate-400"
-              />
-            </figure>
-
+            <ProfileImage userInfo={userInfo} classname="w-24 h-24 lg:w-32 lg:h-32 mx-auto rounded-full flex items-center justify-center"/>
             {userInfo.firstname && userInfo.lastname && (
               <h2 className="text-lg text-center font-bold my-2 text-slate-600">
                 {userInfo.firstname} {userInfo.lastname}
               </h2>
             )}
-            {/* <p className="text-md text-center break-all mx-2 text-slate-600">
-              {userInfo.email}
-            </p> */}
 
             <div className="button-wrapper mx-auto w-full flex flex-col gap-4 px-4 py-4 mt-8">
               {links.map((link) => (

@@ -2,11 +2,13 @@ import RightArrow from "@/assets/right-arrow.png";
 import LinkedinIcon from "@/assets/linkedin-icon.png";
 import TwitterIcon from "@/assets/twitter-icon.png";
 import GithubIcon from "@/assets/github-icon.png";
-import LinkIcon from "@/assets/link.png"
+import LinkIcon from "@/assets/link.png";
 
 import { useGetUserInfo } from "@/application/useUserInfo";
 import { useGetLinks } from "@/application/useLink";
 import { useEffect, useState } from "react";
+import ProfileImage from "./ProfileImage";
+import ShadowLoader from "./ShadowLoader";
 
 interface IButtonProps {
   text: string;
@@ -45,27 +47,39 @@ const Button = ({
   );
 };
 
-export default function MockupPreview({ className, reRenderMockup }: { className?: string; reRenderMockup?: boolean }) {
+export default function MockupPreview({
+  className,
+  reRenderMockup,
+}: {
+  className?: string;
+  reRenderMockup?: boolean;
+}) {
   const [userInfo, setUserInfo] = useState({
     firstname: "",
     lastname: "",
     email: "",
-    profilepicture: "https://via.placeholder.com/250",
+    profilepicture: "",
   });
 
-  const [links, setLinks] = useState<{
-    id: string;
-    platform: string;
-    url: string;
-  }[]>([])
+  const [links, setLinks] = useState<
+    {
+      id: string;
+      platform: string;
+      url: string;
+    }[]
+  >([]);
 
   const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [bgColors, setBgColors] = useState<string[]>([])
+  const [bgColors, setBgColors] = useState<string[]>([]);
+  const [loadingUserInfo, setLoadingUserInfo] = useState(true);
 
   const getUserInfo = useGetUserInfo();
   const { getLinksHandler } = useGetLinks();
 
+  const [loadingLinks, setLoadingLinks] = useState(true);
+
   useEffect(() => {
+    setLoadingUserInfo(true);
     getUserInfo().then((data) => {
       if (!data) return;
       setUserInfo({
@@ -74,33 +88,40 @@ export default function MockupPreview({ className, reRenderMockup }: { className
         email: data.email as string,
         profilepicture: data.profileImage as string,
       });
+      setLoadingUserInfo(false);
     });
   }, [reRenderMockup]);
 
   useEffect(() => {
+    setLoadingLinks(true);
     getLinksHandler().then((data) => {
       if (!data) return;
-      setLinks(data)
-    })
-  }, [reRenderMockup])
+      setLinks(data);
+      setLoadingLinks(false);
+    });
+  }, [reRenderMockup]);
 
   useEffect(() => {
-    setImageUrls(links.map((link) => {
-      if(link.platform === "Github") return GithubIcon as string;
-      if(link.platform === "Twitter") return TwitterIcon as string;
-      if(link.platform === "Linkedin") return LinkedinIcon as string;
+    setImageUrls(
+      links.map((link) => {
+        if (link.platform === "Github") return GithubIcon as string;
+        if (link.platform === "Twitter") return TwitterIcon as string;
+        if (link.platform === "Linkedin") return LinkedinIcon as string;
 
-      return LinkIcon as string;
-    }))
+        return LinkIcon as string;
+      })
+    );
 
-    setBgColors(links.map((link) => {
-      if(link.platform === "Github") return "bg-slate-800";
-      if(link.platform === "Twitter") return "bg-blue-400";
-      if(link.platform === "Linkedin") return "bg-blue-600";
+    setBgColors(
+      links.map((link) => {
+        if (link.platform === "Github") return "bg-slate-800";
+        if (link.platform === "Twitter") return "bg-blue-400";
+        if (link.platform === "Linkedin") return "bg-blue-600";
 
-      return "bg-slate-600";
-    }))
-  }, [links, reRenderMockup])
+        return "bg-slate-600";
+      })
+    );
+  }, [links, reRenderMockup]);
 
   return (
     <div className={`${className} bg-white rounded-lg p-4 lg:p-12 lg:px-16`}>
@@ -109,33 +130,42 @@ export default function MockupPreview({ className, reRenderMockup }: { className
           <div className="top-bar w-1/2 h-8 rounded-[1em] border mx-auto -translate-y-4"></div>
 
           <div className="w-full h-full overflow-y-scroll no-scrollbar pb-12">
-            <figure>
-              <img
-                src={userInfo.profilepicture}
-                alt="profile"
-                className="w-16 h-16 lg:w-24 lg:h-24 mx-auto rounded-full border-2 border-slate-400"
-              />
-            </figure>
+            <ProfileImage
+              userInfo={userInfo}
+              classname="w-32 h-32 flex mx-auto rounded-full border border-white items-center justify-center bg-cover"
+            />
 
-            {userInfo.firstname && userInfo.lastname && (
+            {loadingUserInfo ? (
               <h2 className="text-md text-center font-bold my-2 text-slate-600">
-                {(userInfo.firstname + " " + userInfo.lastname) ?? "Loading..."}
+                Loading...
               </h2>
+            ) : (
+              <>
+                {userInfo.firstname && userInfo.lastname && (
+                  <h2 className="text-md text-center font-bold my-2 text-slate-600">
+                    {userInfo.firstname + " " + userInfo.lastname}
+                  </h2>
+                )}
+                <p className="text-sm text-center break-all mx-2 text-slate-600">
+                  {userInfo.email}
+                </p>
+              </>
             )}
-            <p className="text-sm text-center break-all mx-2 text-slate-600">
-              {userInfo.email ?? "Loading..."}
-            </p>
 
             <div className="button-wrapper mx-auto w-full flex flex-col gap-4 px-4 py-4 mt-8">
-              {links.map((link) => (
-                <Button
-                  key={link.id}
-                  text={link.platform}
-                  url={link.url}
-                  bgcolor={bgColors[links.indexOf(link)]}
-                  imageUrl={imageUrls[links.indexOf(link)]}
-                />
-              ))}
+              {loadingLinks ? (
+                <ShadowLoader />
+              ) : (
+                links.map((link) => (
+                  <Button
+                    key={link.id}
+                    text={link.platform}
+                    url={link.url}
+                    bgcolor={bgColors[links.indexOf(link)]}
+                    imageUrl={imageUrls[links.indexOf(link)]}
+                  />
+                ))
+              )}
             </div>
           </div>
         </div>
