@@ -26,7 +26,7 @@ export default function Profile({
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
+  // const [imageLoading, setImageLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({
     firstname: "",
     lastname: "",
@@ -114,7 +114,7 @@ export default function Profile({
     setIsProfileImageChanges(true);
     setImageLocalPath(e.target.files[0]);
     console.log(typeof e.target.files[0]);
-    setImageLoading(true);
+    // setImageLoading(true);
   };
 
   return (
