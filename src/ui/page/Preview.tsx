@@ -14,6 +14,8 @@ import { useGetUserInfo } from "@/application/useUserInfo";
 import { useGetLinks } from "@/application/useLink";
 import { useEffect, useState } from "react";
 import { notifySuccess } from "@/services/notification";
+import ProfileImage from "../components/ProfileImage";
+import ShadowLoader from "../components/ShadowLoader";
 
 interface IButtonProps {
   text: string;
@@ -61,7 +63,7 @@ export default function Preview() {
     firstname: "",
     lastname: "",
     email: "",
-    profilepicture: "https://via.placeholder.com/250",
+    profilepicture: "",
   });
 
   const [links, setLinks] = useState<
@@ -74,11 +76,14 @@ export default function Preview() {
 
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [bgColors, setBgColors] = useState<string[]>([]);
+  const [loadingUserInfo, setLoadingUserInfo] = useState(true);
+  const [loadingLinks, setLoadingLinks] = useState(true);
 
   const getUserInfo = useGetUserInfo();
   const { getLinksHandler } = useGetLinks();
 
   useEffect(() => {
+    setLoadingUserInfo(true);
     getUserInfo().then((data) => {
       if (!data) return;
       setUserInfo({
@@ -87,13 +92,16 @@ export default function Preview() {
         email: data.email as string,
         profilepicture: data.profileImage as string,
       });
+      setLoadingUserInfo(false);
     });
   }, []);
 
   useEffect(() => {
+    setLoadingLinks(true);
     getLinksHandler().then((data) => {
       if (!data) return;
       setLinks(data);
+      setLoadingLinks(false);
     });
   }, []);
 
@@ -157,10 +165,13 @@ export default function Preview() {
             </button>
             <button
               onClick={() => {
-                navigator.clipboard.writeText(`https://link-sharing-app.vercel.app/${userState.id}`)
-                notifySuccess('Link copied to clipboard!!')
+                navigator.clipboard.writeText(
+                  `https://link-sharing-app.vercel.app/${userState.id}`
+                );
+                notifySuccess("Link copied to clipboard!!");
               }}
-             className="bg-blue-600 text-white hover:opacity-60 px-4 py-2 w-24 md:w-32 rounded-lg text-sm">
+              className="bg-blue-600 text-white hover:opacity-60 px-4 py-2 w-24 md:w-32 rounded-lg text-sm"
+            >
               Share Link
             </button>
           </header>
@@ -168,33 +179,42 @@ export default function Preview() {
 
         <div className="w-full p-4">
           <div className="w-full md:w-96 mx-auto my-4 -translate-y-12 md:-translate-y-24 bg-white shadow-lg px-4 py-8 rounded-lg m-4">
-            <figure>
-              <img
-                src={userInfo.profilepicture}
-                alt="profile"
-                className="w-24 h-24 lg:w-32 lg:h-32 mx-auto rounded-full border-2 border-slate-400"
-              />
-            </figure>
+            <ProfileImage
+              userInfo={userInfo}
+              classname="w-24 h-24 lg:w-28 lg:h-28 mx-auto rounded-full flex items-center justify-center"
+            />
 
+            {loadingUserInfo ? (
+              <h2 className="text-md text-center font-bold my-2 text-slate-600">
+                Loading...
+              </h2>
+            ) : (
+              <>
             {userInfo.firstname && userInfo.lastname && (
               <h2 className="text-lg text-center font-bold my-2 text-slate-600">
                 {userInfo.firstname} {userInfo.lastname}
               </h2>
             )}
             <p className="text-md text-center break-all mx-2 text-slate-600">
-              {userInfo.email}
+            {userInfo.email}
             </p>
+            </>
+            )}
 
             <div className="button-wrapper mx-auto w-full flex flex-col gap-4 px-4 py-4 mt-8">
-              {links.map((link) => (
-                <Button
-                  key={link.id}
-                  text={link.platform}
-                  url={link.url}
-                  bgcolor={bgColors[links.indexOf(link)]}
-                  imageUrl={imageUrls[links.indexOf(link)]}
-                />
-              ))}
+              {loadingLinks ? (
+                <ShadowLoader />
+              ) : (
+                links.map((link) => (
+                  <Button
+                    key={link.id}
+                    text={link.platform}
+                    url={link.url}
+                    bgcolor={bgColors[links.indexOf(link)]}
+                    imageUrl={imageUrls[links.indexOf(link)]}
+                  />
+                ))
+              )}
             </div>
           </div>
         </div>
